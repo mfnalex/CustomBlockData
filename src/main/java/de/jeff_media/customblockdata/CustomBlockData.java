@@ -51,8 +51,8 @@ public class CustomBlockData implements PersistentDataContainer {
     @Deprecated()
     public CustomBlockData(final @NotNull Block block, final @NotNull String namespace) {
         this.chunk = block.getChunk();
-        this.pdc = getPersistentDataContainer();
         this.key = new NamespacedKey(namespace, getKey(block));
+        this.pdc = getPersistentDataContainer();
     }
 
     @NotNull
