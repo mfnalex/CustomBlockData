@@ -36,8 +36,8 @@ public class CustomBlockData implements PersistentDataContainer {
      */
     public CustomBlockData(final @NotNull Block block, final @NotNull Plugin plugin) {
         this.chunk = block.getChunk();
-        this.pdc = getPersistentDataContainer();
         this.key = new NamespacedKey(plugin, getKey(block));
+        this.pdc = getPersistentDataContainer();
     }
 
     /**
