@@ -65,13 +65,13 @@ it will drop the stored item.
 
 ## Discord
 
-If you need, feel free to join my Discord server and head to #programming-help:
+If you need help, feel free to join my Discord server and head to #programming-help:
 
 <a href="https://discord.jeff-media.de"><img src="https://api.jeff-media.de/img/discord1.png"></a>
 
 ## Donate
 
-If you are using this project in your paid plugins, if you just want to buy me coffee, I would be happy over a small donation :)
+If you are using this project in your paid plugins, if you just want to buy me a coffee, I would be happy over a small donation :)
 
 <a href="https://paypal.me/mfnalex"><img src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal" /></a>
 
