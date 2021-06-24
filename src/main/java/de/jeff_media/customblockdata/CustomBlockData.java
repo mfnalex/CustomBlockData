@@ -86,25 +86,25 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     @Override
-    public <T, Z> void set(@NotNull NamespacedKey namespacedKey, @NotNull PersistentDataType<T, Z> persistentDataType, @NotNull Z z) {
+    public <T, Z> void set(final @NotNull NamespacedKey namespacedKey, final @NotNull PersistentDataType<T, Z> persistentDataType, final @NotNull Z z) {
         pdc.set(namespacedKey, persistentDataType, z);
         save();
     }
 
     @Override
-    public <T, Z> boolean has(@NotNull NamespacedKey namespacedKey, @NotNull PersistentDataType<T, Z> persistentDataType) {
+    public <T, Z> boolean has(final @NotNull NamespacedKey namespacedKey, final @NotNull PersistentDataType<T, Z> persistentDataType) {
         return pdc.has(namespacedKey, persistentDataType);
     }
 
     @Nullable
     @Override
-    public <T, Z> Z get(@NotNull NamespacedKey namespacedKey, @NotNull PersistentDataType<T, Z> persistentDataType) {
+    public <T, Z> Z get(final @NotNull NamespacedKey namespacedKey, final @NotNull PersistentDataType<T, Z> persistentDataType) {
         return pdc.get(namespacedKey, persistentDataType);
     }
 
     @NotNull
     @Override
-    public <T, Z> Z getOrDefault(@NotNull NamespacedKey namespacedKey, @NotNull PersistentDataType<T, Z> persistentDataType, @NotNull Z z) {
+    public <T, Z> Z getOrDefault(final @NotNull NamespacedKey namespacedKey, final @NotNull PersistentDataType<T, Z> persistentDataType, final @NotNull Z z) {
         return pdc.getOrDefault(namespacedKey, persistentDataType, z);
     }
 
@@ -115,7 +115,7 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     @Override
-    public void remove(@NotNull NamespacedKey namespacedKey) {
+    public void remove(final @NotNull NamespacedKey namespacedKey) {
         pdc.remove(namespacedKey);
         save();
     }
