@@ -1,3 +1,17 @@
+/*
+ * Made by mfnalex / JEFF Media GbR
+ *
+ * If you find this helpful or if you're using this project inside your paid plugins,
+ * consider leaving a donation :)
+ *
+ * https://paypal.me/mfnalex
+ *
+ * If you need help or have any suggestions, just create an issue or join my discord
+ * and head to the channel #programming-help
+ *
+ * https://discord.jeff-media.de
+ */
+
 package de.jeff_media.customblockdata;
 
 import org.bukkit.Chunk;
@@ -21,6 +35,11 @@ import java.util.Set;
  * <p>
  * Once you clear the custom data of a block, the PersistentDataContainer also gets removed
  * from the chunk's PersistentDataContainer.
+ * <p>
+ * The basic idea is extremely simple - every block's PersistentDataContainer is stored as
+ * {@link org.bukkit.persistence.PersistentDataType#TAG_CONTAINER} inside the chunk.
+ * The {@link org.bukkit.NamespacedKey} used inside the chunk's container is linked to the block's
+ * relative coordinates inside the chunk. That's basically it^^
  */
 public class CustomBlockData implements PersistentDataContainer {
 
@@ -55,6 +74,12 @@ public class CustomBlockData implements PersistentDataContainer {
         this.pdc = getPersistentDataContainer();
     }
 
+    /**
+     * Gets a NamespacedKey that consists of the block's relative coordinates within its chunk
+     *
+     * @param block block
+     * @return NamespacedKey consisting of the block's relative coordinates within its chunk
+     */
     @NotNull
     private static String getKey(@NotNull Block block) {
         final int x = block.getX() & 0x000F;
@@ -63,6 +88,11 @@ public class CustomBlockData implements PersistentDataContainer {
         return String.format("x%dy%dz%d", x, y, z);
     }
 
+    /**
+     * Gets the PersistentDataContainer associated with this block.
+     *
+     * @return PersistentDataContainer of this block
+     */
     @NotNull
     private PersistentDataContainer getPersistentDataContainer() {
         final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
@@ -77,6 +107,9 @@ public class CustomBlockData implements PersistentDataContainer {
         return blockPDC;
     }
 
+    /**
+     * Saves the block's PersistentDataContainer inside the chunk's PersistentDataContainer
+     */
     private void save() {
         if (pdc.isEmpty()) {
             chunk.getPersistentDataContainer().remove(key);
