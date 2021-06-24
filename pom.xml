@@ -12,10 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-        <config.version>${maven.build.timestamp}</config.version>
     </properties>
-
 
     <build>
         <resources>
@@ -47,8 +44,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <relocations>
-                    </relocations>
                     <minimizeJar>true</minimizeJar>
                 </configuration>
                 <executions>
@@ -98,7 +93,7 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
