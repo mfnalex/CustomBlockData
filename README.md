@@ -57,6 +57,8 @@ the instance of your main class:
 PersistentDataContainer customBlockData = new CustomBlockData(block, plugin);
 ```
 
+For more information about how to use it, just look at the [API docs for the PersistentDataContainer](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/persistence/PersistentDataContainer.html) or look at [this tutorial](https://www.spigotmc.org/threads/a-guide-to-1-14-persistentdataholder-api.371200/).
+
 ## Example plugin
 
 Click [here](https://github.com/JEFF-Media-GbR/CustomBlockData-Example) for an example plugin.
