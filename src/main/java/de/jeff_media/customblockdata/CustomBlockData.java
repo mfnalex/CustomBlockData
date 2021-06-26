@@ -89,6 +89,15 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     /**
+     * Removes all custom block data
+     */
+    public void clear() {
+        if(pdc.has(key, PersistentDataType.TAG_CONTAINER)) {
+            pdc.remove(key);
+        }
+    }
+
+    /**
      * Gets the PersistentDataContainer associated with this block.
      *
      * @return PersistentDataContainer of this block
