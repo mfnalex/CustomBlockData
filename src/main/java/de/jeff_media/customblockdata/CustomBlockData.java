@@ -95,6 +95,7 @@ public class CustomBlockData implements PersistentDataContainer {
         if(pdc.has(key, PersistentDataType.TAG_CONTAINER)) {
             pdc.remove(key);
         }
+        save();
     }
 
     /**
