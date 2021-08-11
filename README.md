@@ -5,7 +5,7 @@ It does so by providing the `CustomBlockData`class which implements the `Persist
 
 It does not need any files or databases by saving the information inside the chunk's PersistentDataContainer, and the information is persistent even after server restarts.
 
-CustomBlockData is compatible with all Bukkit versions from 1.14.1 onwards, including all forks.
+CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, including all forks.
 
 ## Advantages
 
@@ -73,7 +73,7 @@ If you need help, feel free to join my Discord server and head to #programming-h
 
 ## Donate
 
-If you are using this project in your paid plugins, if you just want to buy me a coffee, I would be happy over a small donation :)
+If you are using this project in your paid plugins, or if you just want to buy me a coffee, I would be happy over a small donation :)
 
 <a href="https://paypal.me/mfnalex"><img src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal" /></a>
 
