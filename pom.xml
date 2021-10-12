@@ -6,8 +6,15 @@
     <groupId>de.jeff_media</groupId>
     <name>CustomBlockData</name>
     <artifactId>CustomBlockData</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <description>Spigot API Library to add custom data to blocks</description>
+    <version>1.0.0</version>
+    <description>Bukkit API Library to add custom data to blocks</description>
+    <url>https://github.com/JEFF-Media-GbR/CustomBlockData/</url>
+    <inceptionYear>2021</inceptionYear>
+
+    <organization>
+        <name>JEFF Media GbR</name>
+        <url>https://www.jeff-media.com</url>
+    </organization>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,7 +32,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -34,7 +41,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <finalName>${project.name}</finalName>
                 </configuration>
@@ -42,7 +49,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.4</version>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
                 </configuration>
@@ -52,6 +59,26 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.1.1</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -75,8 +102,8 @@
         </repository>
 
         <repository>
-            <id>jeff-media-gbr</id>
-            <url>https://repo.jeff-media.de/maven2</url>
+            <id>jeff-media-public</id>
+            <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
         </repository>
 
     </repositories>
@@ -86,13 +113,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>22.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -100,8 +127,8 @@
 
     <distributionManagement>
         <repository>
-            <id>jeff-ftp</id>
-            <url>ftps://ftp.jeff-media.de/maven2</url>
+            <id>jeff-media-public</id>
+            <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
         </repository>
     </distributionManagement>
 

@@ -5,7 +5,7 @@ It does so by providing the `CustomBlockData`class which implements the `Persist
 
 It does not need any files or databases by saving the information inside the chunk's PersistentDataContainer, and the information is persistent even after server restarts.
 
-CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, including all forks.
+CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, including all forks. Older versions are not supported because *Chunk* only implements *PersistentDataHolder* since 1.16.3.
 
 ## Advantages
 
@@ -20,7 +20,7 @@ CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, incl
 ```xml
 <repository>
     <id>jeff-media-gbr</id>
-    <url>https://repo.jeff-media.de/maven2</url>
+    <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
 </repository>
 ```
 
@@ -29,7 +29,7 @@ CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, incl
 <dependency>
     <groupId>de.jeff_media</groupId>
     <artifactId>CustomBlockData</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <scope>compile</scope>
 </dependency>
 ```
