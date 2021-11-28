@@ -55,7 +55,7 @@ public class CustomBlockData implements PersistentDataContainer {
      */
     public CustomBlockData(final @NotNull Block block, final @NotNull Plugin plugin) {
         this.chunk = block.getChunk();
-        this.key = new NamespacedKey(plugin, getKey(block));
+        this.key = new NamespacedKey(plugin, getOldKey(block));
         this.pdc = getPersistentDataContainer();
     }
 
@@ -70,20 +70,20 @@ public class CustomBlockData implements PersistentDataContainer {
     @Deprecated()
     public CustomBlockData(final @NotNull Block block, final @NotNull String namespace) {
         this.chunk = block.getChunk();
-        this.key = new NamespacedKey(namespace, getKey(block));
+        this.key = new NamespacedKey(namespace, getOldKey(block));
         this.pdc = getPersistentDataContainer();
     }
 
     /**
-     * Gets a NamespacedKey that consists of the block's relative coordinates within its chunk
+     * Gets a String-based NamespacedKey that consists of the block's relative coordinates within its chunk
      *
      * @param block block
      * @return NamespacedKey consisting of the block's relative coordinates within its chunk
      */
     @NotNull
-    private static String getKey(@NotNull Block block) {
+    private static String getOldKey(@NotNull Block block) {
         final int x = block.getX() & 0x000F;
-        final int y = block.getY() & 0x00FF;
+        final int y = block.getY();
         final int z = block.getZ() & 0x000F;
         return String.format("x%dy%dz%d", x, y, z);
     }
