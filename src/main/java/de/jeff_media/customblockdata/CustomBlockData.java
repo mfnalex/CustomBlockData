@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  */
 public class CustomBlockData implements PersistentDataContainer {
 
-    private static final Pattern KEY_REGEX = Pattern.compile("x(\\d+)y(-?\\d+)z(\\d)");
+    private static final Pattern KEY_REGEX = Pattern.compile("^x(\\d+)y(-?\\d+)z(\\d+)$");
     private final PersistentDataContainer pdc;
     private final Chunk chunk;
     private final NamespacedKey key;
