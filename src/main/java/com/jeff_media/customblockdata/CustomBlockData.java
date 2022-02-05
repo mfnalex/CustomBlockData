@@ -12,24 +12,21 @@
  * https://discord.jeff-media.de
  */
 
-package de.jeff_media.customblockdata;
+package com.jeff_media.customblockdata;
 
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.stream.events.Namespace;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -52,9 +49,21 @@ import java.util.stream.Collectors;
 public class CustomBlockData implements PersistentDataContainer {
 
     private static final Pattern KEY_REGEX = Pattern.compile("^x(\\d+)y(-?\\d+)z(\\d+)$");
+    private static final int CHUNK_MIN_XZ = 0;
+    private static final int CHUNK_MAX_XZ = 15;
+    private static boolean hasWorldInfoGetMinHeightMethod;
     private final PersistentDataContainer pdc;
     private final Chunk chunk;
     private final NamespacedKey key;
+
+    static {
+        try {
+            Class.forName("org.bukkit.generator.WorldInfo");
+            hasWorldInfoGetMinHeightMethod = true;
+        } catch (final ClassNotFoundException exception) {
+            hasWorldInfoGetMinHeightMethod = false;
+        }
+    }
 
     /**
      * Gets the PersistentDataContainer associated with the given block and plugin
@@ -76,7 +85,7 @@ public class CustomBlockData implements PersistentDataContainer {
      *
      * @deprecated Use {@link #CustomBlockData(Block, Plugin)} instead.
      */
-    @Deprecated()
+    @Deprecated
     public CustomBlockData(final @NotNull Block block, final @NotNull String namespace) {
         this.chunk = block.getChunk();
         this.key = new NamespacedKey(namespace, getOldKey(block));
@@ -85,32 +94,69 @@ public class CustomBlockData implements PersistentDataContainer {
 
     /**
      * Returns a Set&lt;Block&gt; of all blocks in this chunk containing Custom Block Data created by the given plugin
+     *
      * @param plugin Plugin
      * @param chunk Chunk
+     *
      * @return A Set containing all blocks in this chunk containing Custom Block Data created by the given plugin
      */
     @NotNull
-    public static Set<Block> getBlocksWithCustomData(Plugin plugin, Chunk chunk) {
-        NamespacedKey dummy = new NamespacedKey(plugin, "dummy");
-        PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
+    public static Set<Block> getBlocksWithCustomData(final Plugin plugin, final Chunk chunk) {
+        final NamespacedKey dummy = new NamespacedKey(plugin, "dummy");
+        final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
         return chunkPDC.getKeys().stream()
                 .filter(key -> key.getNamespace().equals(dummy.getNamespace()))
-                .map(key -> {
-                    Vector vector = getChunkCoordinatesFromKey(key.getKey());
-                    if(vector == null) return null;
-                    return chunk.getBlock(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());})
+                .map(key -> getBlockFromKey(key, chunk))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a Set&lt;Block&gt; of all blocks in this chunk containing Custom Block Data created by the given plugin
+     *
+     * @param namespace Namespace
+     * @param chunk Chunk
+     *
+     * @return A Set containing all blocks in this chunk containing Custom Block Data created by the given plugin
+     *
+     * @deprecated Use {@link #getBlocksWithCustomData(Plugin, Chunk)} instead
+     */
+    @NotNull
+    @Deprecated
+    public static Set<Block> getBlocksWithCustomData(final String namespace, final Chunk chunk) {
+        final NamespacedKey dummy = new NamespacedKey(namespace, "dummy");
+        return getBlocksWithCustomData(chunk, dummy);
+    }
+
+    @NotNull
+    private static Set<Block> getBlocksWithCustomData(final @NotNull Chunk chunk, final @NotNull NamespacedKey dummy) {
+        final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
+        return chunkPDC.getKeys().stream()
+                .filter(key -> key.getNamespace().equals(dummy.getNamespace()))
+                .map(key -> getBlockFromKey(key, chunk))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
     @Nullable
-    private static Vector getChunkCoordinatesFromKey(String key) {
-        Matcher matcher = KEY_REGEX.matcher(key);
+    private static Block getBlockFromKey(final NamespacedKey key, final Chunk chunk) {
+        final Matcher matcher = KEY_REGEX.matcher(key.getKey());
         if(!matcher.matches()) return null;
-        return new Vector(
-                Integer.parseInt(matcher.group(1)),
-                Integer.parseInt(matcher.group(2)),
-                Integer.parseInt(matcher.group(3)));
+        final int x = Integer.parseInt(matcher.group(1));
+        final int y = Integer.parseInt(matcher.group(2));
+        final int z = Integer.parseInt(matcher.group(3));
+        if((x < CHUNK_MIN_XZ || x > CHUNK_MAX_XZ)
+            || (z < CHUNK_MIN_XZ || z > CHUNK_MAX_XZ)
+            || (y < getWorldMinHeight(chunk.getWorld()) || y > chunk.getWorld().getMaxHeight() - 1)) return null;
+        return chunk.getBlock(x,y,z);
+    }
+
+    private static int getWorldMinHeight(final World world) {
+        if(hasWorldInfoGetMinHeightMethod) {
+            return world.getMinHeight();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -120,7 +166,7 @@ public class CustomBlockData implements PersistentDataContainer {
      * @return NamespacedKey consisting of the block's relative coordinates within its chunk
      */
     @NotNull
-    private static String getOldKey(@NotNull Block block) {
+    private static String getOldKey(@NotNull final Block block) {
         final int x = block.getX() & 0x000F;
         final int y = block.getY();
         final int z = block.getZ() & 0x000F;

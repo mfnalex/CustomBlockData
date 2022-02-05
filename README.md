@@ -27,9 +27,9 @@ CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, incl
 **Dependency**
 ```xml
 <dependency>
-    <groupId>de.jeff_media</groupId>
+    <groupId>com.jeff_media</groupId>
     <artifactId>CustomBlockData</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -42,8 +42,8 @@ the `<configuration>` section of your maven-shade-plugin declaration:
 ```xml
 <relocations>
     <relocation>
-        <pattern>de.jeff_media.customblockdata.CustomBlockData</pattern>
-        <shadedPattern>your.package.name.CustomBlockData</shadedPattern>
+        <pattern>com.jeff_media.customblockdata.CustomBlockData</pattern>
+        <shadedPattern>YOUR.PACKAGE.CustomBlockData</shadedPattern>
     </relocation>
 </relocations>
 ```
@@ -58,6 +58,10 @@ PersistentDataContainer customBlockData = new CustomBlockData(block, plugin);
 ```
 
 For more information about how to use it, just look at the [API docs for the PersistentDataContainer](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/persistence/PersistentDataContainer.html) or look at [this tutorial](https://www.spigotmc.org/threads/a-guide-to-1-14-persistentdataholder-api.371200/).
+
+## Javadocs
+
+Javadocs can be found here: https://hub.jeff-media.com/javadocs/customblockdata/
 
 ## Example plugin
 
