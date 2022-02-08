@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AllTests {
 
     ServerMock serverMock;
@@ -36,9 +37,9 @@ public class AllTests {
                 {1234, 64, 987654}
         };
         chunkCoords = new int[][]{
-                {0,0,3},
-                {6,6,1},
-                {77,61728,1}
+                {0,0,3}, // Chunk 0,0 must contain 3 custom PDC blocks - 0,0,0, 1,64,0 and 2,127,0
+                {6,6,1}, // Chunk 6,6 must contain 1 custom PDC block - 100,127,100
+                {77,61728,1} // Chunk 77,61728 must contain 1 custom PDC block - 1234, 64, 987654
         };
     }
 
@@ -48,7 +49,8 @@ public class AllTests {
     }
 
     @Test
-    void test_addBlockData() {
+    @Order(1)
+    void addBlockData() {
         int currentValue = 0;
         for(final int[] coord : coords) {
             final Block block = world.getBlockAt(coord[0],coord[1],coord[2]);
@@ -67,11 +69,23 @@ public class AllTests {
     }
 
     @Test
-    void test_getBlockData() {
+    @Order(2)
+    void getBlockData() {
         for(final int[] chunkCoord : chunkCoords) {
             //System.out.println("Checking PDC values in chunk " + chunkCoord[0] + ", " + chunkCoord[1] + " (expecting " + chunkCoord[2] + ")");
             final Chunk chunk = world.getChunkAt(chunkCoord[0],chunkCoord[1]);
             assert CustomBlockData.getBlocksWithCustomData(plugin, chunk).size() == chunkCoord[2];
+        }
+    }
+
+    @Test
+    @Order(3)
+    void removeBlockData() {
+        for(int[] coord : coords) {
+            CustomBlockData cbd = new CustomBlockData(world.getBlockAt(coord[0],coord[1],coord[2]),plugin);
+            assert cbd.getKeys().size()==1;
+            cbd.remove(dummy);
+            assert cbd.getKeys().size()==0;
         }
     }
 
