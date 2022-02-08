@@ -1,0 +1,3 @@
+main: com.jeff_media.customblockdata.TestPlugin
+version: Test
+name: TestPlugin

@@ -2,7 +2,6 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.jeff_media</groupId>
     <name>CustomBlockData</name>
     <artifactId>CustomBlockData</artifactId>
@@ -10,17 +9,14 @@
     <description>Bukkit API Library to add custom data to blocks</description>
     <url>https://github.com/JEFF-Media-GbR/CustomBlockData/</url>
     <inceptionYear>2021</inceptionYear>
-
     <organization>
         <name>JEFF Media GbR</name>
         <url>https://www.jeff-media.com</url>
     </organization>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
     </properties>
-
     <profiles>
         <profile>
             <id>doclint-java8-disable</id>
@@ -46,7 +42,6 @@
             </build>
         </profile>
     </profiles>
-
     <build>
         <resources>
             <resource>
@@ -133,25 +128,18 @@
                 </executions>
             </plugin>
         </plugins>
-
     </build>
-
     <repositories>
-
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-
         <repository>
             <id>jeff-media-public</id>
             <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
         </repository>
-
     </repositories>
-
     <dependencies>
-
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -164,14 +152,17 @@
             <version>22.0.0</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.18</artifactId>
+            <version>1.15.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
     <distributionManagement>
         <repository>
             <id>jeff-media-public</id>
             <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
         </repository>
     </distributionManagement>
-
 </project>
