@@ -23,6 +23,7 @@ public class CustomBlockDataTest {
         serverMock = MockBukkit.mock();
         plugin = MockBukkit.load(MockPlugin.class);
         world = new WorldMock(Material.STONE, 64);
+        System.out.println("Mocking...");
     }
 
     @AfterEach
@@ -32,6 +33,7 @@ public class CustomBlockDataTest {
 
     @Test
     void test_addBlockData() {
+        System.out.println("Test: test_addBlockData");
         int[][] coords = {{0,64,0},{1,64,0},{2,64,0},{100,-64,100}};
         NamespacedKey dummy = new NamespacedKey(plugin,"key");
         int currentValue = 0;
