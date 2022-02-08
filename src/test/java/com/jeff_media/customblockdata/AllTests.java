@@ -24,7 +24,6 @@ public class AllTests {
 
     @BeforeAll
     void setup() {
-        System.out.println("SETUP");
         serverMock = MockBukkit.mock();
         plugin = MockBukkit.load(MockPlugin.class);
         world = new WorldMock(Material.STONE, 64);
