@@ -4,20 +4,24 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CustomBlockDataTest {
 
     ServerMock serverMock;
-    TestPlugin plugin;
+    MockPlugin plugin;
     World world;
 
     @BeforeEach
     void setup() {
         serverMock = MockBukkit.mock();
-        plugin = MockBukkit.load(TestPlugin.class);
+        plugin = MockBukkit.load(MockPlugin.class);
         world = new WorldMock(Material.STONE, 64);
     }
 
@@ -26,7 +30,7 @@ public class CustomBlockDataTest {
         MockBukkit.unmock();
     }
 
-    /*@Test
+    @Test
     void test_addBlockData() {
         int[][] coords = {{0,64,0},{1,64,0},{2,64,0},{100,-64,100}};
         NamespacedKey dummy = new NamespacedKey(plugin,"key");
@@ -44,6 +48,6 @@ public class CustomBlockDataTest {
 
             currentValue++;
         }
-    }*/
+    }
 
 }

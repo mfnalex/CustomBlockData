@@ -6,13 +6,13 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 
 import java.io.File;
 
-public class TestPlugin extends JavaPlugin {
+public class MockPlugin extends JavaPlugin {
 
-    public TestPlugin() {
+    public MockPlugin() {
         super();
     }
 
-    public TestPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File datafolder, File file) {
+    public MockPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File datafolder, File file) {
         super(loader,description,datafolder,file);
     }
 
