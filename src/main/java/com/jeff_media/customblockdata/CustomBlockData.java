@@ -103,12 +103,7 @@ public class CustomBlockData implements PersistentDataContainer {
     @NotNull
     public static Set<Block> getBlocksWithCustomData(final Plugin plugin, final Chunk chunk) {
         final NamespacedKey dummy = new NamespacedKey(plugin, "dummy");
-        final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
-        return chunkPDC.getKeys().stream()
-                .filter(key -> key.getNamespace().equals(dummy.getNamespace()))
-                .map(key -> getBlockFromKey(key, chunk))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+       return getBlocksWithCustomData(chunk, dummy);
     }
 
     /**
