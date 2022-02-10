@@ -103,7 +103,7 @@ public class CustomBlockData implements PersistentDataContainer {
     @NotNull
     public static Set<Block> getBlocksWithCustomData(final Plugin plugin, final Chunk chunk) {
         final NamespacedKey dummy = new NamespacedKey(plugin, "dummy");
-       return getBlocksWithCustomData(chunk, dummy);
+        return getBlocksWithCustomData(chunk, dummy);
     }
 
     /**
