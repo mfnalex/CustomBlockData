@@ -1,10 +1,10 @@
 # CustomBlockData
 <!--- Buttons start -->
 <p align="center">
-  <a href="https://www.spigotmc.org/threads/more-persistent-data-types-collections-maps-and-arrays-for-pdc.520677/">
+  <a href="https://www.spigotmc.org/threads/custom-block-data-persistentdatacontainer-for-blocks.512422/">
     <img src="https://static.jeff-media.com/img/button_spigotmc_thread.png" alt="SpigotMC Thread">
   </a>
-  <a href="https://hub.jeff-media.com/javadocs/morepersistentdatatypes">
+  <a href="https://hub.jeff-media.com/javadocs/customblockdata">
     <img src="https://static.jeff-media.com/img/button_javadocs.png" alt="Javadocs">
   </a>
   <a href="https://discord.jeff-media.com/">
