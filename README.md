@@ -1,5 +1,20 @@
 # CustomBlockData
-
+<!--- Buttons start -->
+<p align="center">
+  <a href="https://www.spigotmc.org/threads/more-persistent-data-types-collections-maps-and-arrays-for-pdc.520677/">
+    <img src="https://static.jeff-media.com/img/button_spigotmc_thread.png" alt="SpigotMC Thread">
+  </a>
+  <a href="https://hub.jeff-media.com/javadocs/morepersistentdatatypes">
+    <img src="https://static.jeff-media.com/img/button_javadocs.png" alt="Javadocs">
+  </a>
+  <a href="https://discord.jeff-media.com/">
+    <img src="https://static.jeff-media.com/img/button_discord.png" alt="Discord">
+  </a>
+  <a href="https://paypal.me/mfnalex">
+    <img src="https://static.jeff-media.com/img/button_donate.png">
+  </a>
+</p>
+<!--- Buttons end -->
 CustomBlockData is a library for the Bukkit API that allows you to store ANY information inside blocks.
 It does so by providing the `CustomBlockData`class which implements the `PersistentDataHolder` interface.
 
