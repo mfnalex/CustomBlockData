@@ -15,8 +15,9 @@
   </a>
 </p>
 <!--- Buttons end -->
+
 CustomBlockData is a library for the Bukkit API that allows you to store ANY information inside blocks.
-It does so by providing the `CustomBlockData`class which implements the `PersistentDataHolder` interface.
+It does so by providing the `CustomBlockData` class which implements the `PersistentDataHolder` interface.
 
 It does not need any files or databases by saving the information inside the chunk's PersistentDataContainer, and the information is persistent even after server restarts.
 
