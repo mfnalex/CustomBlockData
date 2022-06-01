@@ -49,7 +49,7 @@ CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, incl
 <dependency>
     <groupId>com.jeff_media</groupId>
     <artifactId>CustomBlockData</artifactId>
-    <version>1.0.5</version>
+    <version>2.0.0</version>
     <scope>compile</scope>
 </dependency>
 ```
