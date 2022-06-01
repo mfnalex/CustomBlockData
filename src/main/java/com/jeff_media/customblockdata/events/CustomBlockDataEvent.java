@@ -48,16 +48,20 @@ public abstract class CustomBlockDataEvent extends Event implements Cancellable 
         this.isCancelled = cancel;
     }
 
+    public Reason getReason() {
+        if (bukkitEvent == null) return null;
+        for (Reason reason : Reason.values()) {
+            if (reason.eventClasses.stream().anyMatch(clazz -> clazz.equals(bukkitEvent.getClass()))) return reason;
+        }
+        return Reason.UNKNOWN;
+    }
+
     public enum Reason {
-        BLOCK_BREAK(BlockBreakEvent.class),
-        BLOCK_PLACE(BlockPlaceEvent.class),
-        EXPLOSION(EntityExplodeEvent.class, BlockExplodeEvent.class),
-        PISTON(BlockPistonExtendEvent.class, BlockPistonRetractEvent.class),
-        BURN(BlockBurnEvent.class),
-        UNKNOWN((Class<? extends Event>) null);
+        BLOCK_BREAK(BlockBreakEvent.class), BLOCK_PLACE(BlockPlaceEvent.class), EXPLOSION(EntityExplodeEvent.class, BlockExplodeEvent.class), PISTON(BlockPistonExtendEvent.class, BlockPistonRetractEvent.class), BURN(BlockBurnEvent.class), UNKNOWN((Class<? extends Event>) null);
 
         private final List<Class<? extends Event>> eventClasses;
 
+        @SafeVarargs
         Reason(Class<? extends Event>... eventClasses) {
             this.eventClasses = Arrays.asList(eventClasses);
         }
@@ -65,13 +69,5 @@ public abstract class CustomBlockDataEvent extends Event implements Cancellable 
         public List<Class<? extends Event>> getApplicableEvents() {
             return this.eventClasses;
         }
-    }
-
-    public Reason getReason() {
-        if(bukkitEvent == null) return null;
-        for(Reason reason : Reason.values()) {
-            if(reason.eventClasses.stream().anyMatch(clazz -> clazz.equals(bukkitEvent.getClass()))) return reason;
-        }
-        return Reason.UNKNOWN;
     }
 }
