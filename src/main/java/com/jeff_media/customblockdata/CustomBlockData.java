@@ -38,22 +38,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * PersistentDataContainer for blocks!
- * <p>
- * Blocks do not implement PersistentDataHolder, so you cannot store custom data inside them.
- * We can however just use the chunk instead. Every Block gets its own PersistentDataContainer,
- * created and stored only when needed.
- * <p>
- * Once you clear the custom data of a block, the PersistentDataContainer also gets removed
- * from the chunk's PersistentDataContainer.
- * <p>
- * The basic idea is extremely simple - every block's PersistentDataContainer is stored as
- * {@link org.bukkit.persistence.PersistentDataType#TAG_CONTAINER} inside the chunk.
- * The {@link org.bukkit.NamespacedKey} used inside the chunk's container is linked to the block's
- * relative coordinates inside the chunk. That's basically it^^
- */
-
-/**
  * Represents a {@link PersistentDataContainer} for a specific {@link Block}. Also provides some static utility methods
  * that can be used on every PersistentDataContainer.
  *
