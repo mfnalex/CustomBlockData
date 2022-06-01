@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: Make one event for the whole List<Block>
 public class CustomBlockDataMoveEvent extends CustomBlockDataEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
