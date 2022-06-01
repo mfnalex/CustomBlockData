@@ -99,8 +99,6 @@ public class CustomBlockDataListener implements Listener {
     }
 
     private void onPiston(List<Block> blocks, BlockPistonEvent bukkitEvent) {
-        System.out.println("onPiston List");
-        // TODO: Fix: This will duplicate / "copy PDCs into PDCs" when several blocks with PDC are moved
         Map<Block,CustomBlockData> map = new LinkedHashMap<>();
         BlockFace direction = bukkitEvent.getDirection();
         blocks.stream().filter(customDataPredicate).forEach(block -> {
@@ -119,13 +117,11 @@ public class CustomBlockDataListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPiston(BlockPistonExtendEvent event) {
-        System.out.println("onPiston Extend");
         onPiston(event.getBlocks(), event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPiston(BlockPistonRetractEvent event) {
-        System.out.println("onPiston Retract");
         onPiston(event.getBlocks(), event);
     }
 
