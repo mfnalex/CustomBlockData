@@ -117,12 +117,12 @@ public class CustomBlockDataListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPiston(BlockPistonExtendEvent event) {
-        onPiston(event);
+        onPiston(event.getBlocks(), event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPiston(BlockPistonRetractEvent event) {
-        onPiston(event);
+        onPiston(event.getBlocks(), event);
     }
 
 }
