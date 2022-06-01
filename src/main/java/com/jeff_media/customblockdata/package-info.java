@@ -19,23 +19,7 @@
  *
  * Donations: https://paypal.me/mfnalex
  */
-
-package com.jeff_media.customblockdata.events;
-
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
- * Called when a block's CustomBlockData is about to be removed because the block was broken, replaced, or has changed in other ways.
+ * The root package of the CustomBlockData API
  */
-public class CustomBlockDataRemoveEvent extends CustomBlockDataEvent {
-
-    public CustomBlockDataRemoveEvent(@NotNull Plugin plugin, @NotNull Block block, @Nullable Event bukkitEvent) {
-        super(plugin, block, bukkitEvent);
-    }
-
-}
+package com.jeff_media.customblockdata;

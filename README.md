@@ -18,7 +18,7 @@
 <!--- Buttons end -->
 
 CustomBlockData is a library for the Bukkit API that allows you to store ANY information inside blocks.
-It does so by providing the `CustomBlockData` class which implements the `PersistentDataHolder` interface.
+It does so by providing the `CustomBlockData` class which implements the `PersistentDataContainer` interface.
 
 It does not need any files or databases by saving the information inside the chunk's PersistentDataContainer, and the information is persistent even after server restarts.
 
@@ -29,6 +29,9 @@ CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, incl
 - It does not need any files or databases
 - When the chunk where the block is inside gets deleted, there will be no leftover information
 - You can store anything that can be stored inside a normal `PersistantDataContainer` (which means, basically, **anything**)
+- It can automatically keep track of block changes and automatically delete block data when a block gets broken, move data when a block gets moved, etc
+  - You can make specific blocks protected from this, or listen to the cancellable `CustomBlockDataEvent`s 
+  - (This is disabled by default for backwards compatibility - just call `CustomBlockData#registerListener(Plugin)` to enable it) 
 
 ## Maven
 

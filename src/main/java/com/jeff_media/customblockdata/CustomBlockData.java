@@ -1,23 +1,28 @@
 /*
- * Made by mfnalex / JEFF Media GbR
+ * Copyright (c) 2022 Alexander Majka (mfnalex) / JEFF Media GbR
  *
- * If you find this helpful or if you're using this project inside your paid plugins,
- * consider leaving a donation :)
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License.
  *
- * https://paypal.me/mfnalex
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  *
- * If you need help or have any suggestions, just create an issue or join my discord
- * and head to the channel #programming-help
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  *
- * https://discord.jeff-media.de
+ * If you need help or have any suggestions, feel free to join my Discord and head to #programming-help:
+ *
+ * Discord: https://discord.jeff-media.com/
+ *
+ * If you find this library helpful or if you're using it one of your paid plugins, please consider leaving a donation
+ * to support the further development of this project :)
+ *
+ * Donations: https://paypal.me/mfnalex
  */
 
 package com.jeff_media.customblockdata;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataAdapterContext;
@@ -47,9 +52,33 @@ import java.util.stream.Collectors;
  * The {@link org.bukkit.NamespacedKey} used inside the chunk's container is linked to the block's
  * relative coordinates inside the chunk. That's basically it^^
  */
+
+/**
+ * Represents a {@link PersistentDataContainer} for a specific {@link Block}. Also provides some static utility methods
+ * that can be used on every PersistentDataContainer.
+ *
+ * By default, and for backward compatibility reasons, data stored inside blocks is independent of the underlying block.
+ * That means: if you store some data inside a dirt block, and that block is now pushed by a piston, then the information
+ * will still reside in the old block's location. <b>You can of course also make CustomBockData automatically take care of those situations</b>,
+ * so that CustomBlockData will always be updated on certain Bukkit Events like BlockBreakEvent, EntityExplodeEvent, etc.
+ * For more information about this please see {@link #registerListener(Plugin)}.
+ */
 public class CustomBlockData implements PersistentDataContainer {
 
-    private static final PersistentDataType<?, ?>[] PRIMITIVE_DATA_TYPES = new PersistentDataType<?, ?>[]{PersistentDataType.BYTE, PersistentDataType.SHORT, PersistentDataType.INTEGER, PersistentDataType.LONG, PersistentDataType.FLOAT, PersistentDataType.DOUBLE, PersistentDataType.STRING, PersistentDataType.BYTE_ARRAY, PersistentDataType.INTEGER_ARRAY, PersistentDataType.LONG_ARRAY, PersistentDataType.TAG_CONTAINER_ARRAY, PersistentDataType.TAG_CONTAINER};
+    private static final PersistentDataType<?, ?>[] PRIMITIVE_DATA_TYPES = new PersistentDataType<?, ?>[]{
+            PersistentDataType.BYTE,
+            PersistentDataType.SHORT,
+            PersistentDataType.INTEGER,
+            PersistentDataType.LONG,
+            PersistentDataType.FLOAT,
+            PersistentDataType.DOUBLE,
+            PersistentDataType.STRING,
+            PersistentDataType.BYTE_ARRAY,
+            PersistentDataType.INTEGER_ARRAY,
+            PersistentDataType.LONG_ARRAY,
+            PersistentDataType.TAG_CONTAINER_ARRAY,
+            PersistentDataType.TAG_CONTAINER};
+    private static final NamespacedKey PERSISTENCE_KEY = Objects.requireNonNull(NamespacedKey.fromString("customblockdata:protected"),"Could not create persistence NamespacedKey");
     private static final Pattern KEY_REGEX = Pattern.compile("^x(\\d+)y(-?\\d+)z(\\d+)$");
     private static final int CHUNK_MIN_XZ = 0;
     private static final int CHUNK_MAX_XZ = 15;
@@ -113,8 +142,28 @@ public class CustomBlockData implements PersistentDataContainer {
         this.pdc = getPersistentDataContainer();
     }
 
-    static NamespacedKey getKey(Plugin plugin, Block block) {
+    private static NamespacedKey getKey(Plugin plugin, Block block) {
         return new NamespacedKey(plugin, getKey(block));
+    }
+
+    /**
+     * Gets whether this CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
+     * @see #registerListener(Plugin)
+     */
+    public boolean isProtected() {
+        return has(PERSISTENCE_KEY, DataType.BOOLEAN);
+    }
+
+    /**
+     * Sets whether this CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
+     * @see #registerListener(Plugin)
+     */
+    public void setProtected(boolean isProtected) {
+        if(isProtected) {
+            set(PERSISTENCE_KEY, DataType.BOOLEAN, true);
+        } else {
+            remove(PERSISTENCE_KEY);
+        }
     }
 
     /**
@@ -159,10 +208,19 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     /**
-     * Checks if the given Block has any CustomBockData associated with it
+     * Get if the given Block has any CustomBockData associated with it
      */
     public static boolean hasCustomBlockData(Block block, Plugin plugin) {
         return block.getChunk().getPersistentDataContainer().has(getKey(plugin, block), PersistentDataType.TAG_CONTAINER);
+    }
+
+    /**
+     * Get if the given Block's CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
+     * @see #registerListener(Plugin)
+     * @return true if the Block's CustomBlockData is protected, false if it doesn't have any CustomBlockData or it's not protected
+     */
+    public static boolean isProtected(Block block, Plugin plugin) {
+        return new CustomBlockData(block,plugin).isProtected();
     }
 
     /**
@@ -174,9 +232,12 @@ public class CustomBlockData implements PersistentDataContainer {
      * If you do not want to handle this yourself, you can instead let CustomBlockData handle those events by calling this
      * method once. It will then listen to the common events itself, and automatically remove/update CustomBlockData.
      * <p>
+     * Block changes made using the Bukkit API (e.g. {@link Block#setType(Material)}) or using a plugin like WorldEdit
+     * will <b>not</b> be registered by this (but pull requests are welcome, of course)
+     * <p>
      * For example, when you call this method in onEnable, CustomBlockData will now get automatically removed from a block
      * when a player breaks this block. It will additionally call custom events like {@link com.jeff_media.customblockdata.events.CustomBlockDataRemoveEvent}.
-     * Those events implement {@link org.bukkit.event.Cancellable}. If one of the CustomBlockData events is canelled,
+     * Those events implement {@link org.bukkit.event.Cancellable}. If one of the CustomBlockData events is cancelled,
      * it will not alter any CustomBlockData.
      *
      * @param plugin Your plugin's instance
@@ -226,7 +287,7 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     /**
-     * Removes all custom block data
+     * Removes all CustomBlockData and disables the protection status ({@link #setProtected(boolean)}
      */
     public void clear() {
         pdc.getKeys().forEach(pdc::remove);
@@ -323,6 +384,34 @@ public class CustomBlockData implements PersistentDataContainer {
      */
     public PersistentDataType<?, ?> getDataType(NamespacedKey key) {
         return getDataType(this, key);
+    }
+
+    private static final class DataType {
+        private static final PersistentDataType<Byte,Boolean> BOOLEAN = new PersistentDataType<Byte, Boolean>() {
+            @NotNull
+            @Override
+            public Class<Byte> getPrimitiveType() {
+                return Byte.class;
+            }
+
+            @NotNull
+            @Override
+            public Class<Boolean> getComplexType() {
+                return Boolean.class;
+            }
+
+            @NotNull
+            @Override
+            public Byte toPrimitive(@NotNull Boolean complex, @NotNull PersistentDataAdapterContext context) {
+                return complex ? (byte) 1 : (byte) 0;
+            }
+
+            @NotNull
+            @Override
+            public Boolean fromPrimitive(@NotNull Byte primitive, @NotNull PersistentDataAdapterContext context) {
+                return primitive == (byte) 1;
+            }
+        };
     }
 }
 

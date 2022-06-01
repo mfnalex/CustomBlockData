@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright (c) 2022 Alexander Majka (mfnalex) / JEFF Media GbR
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+  ~ the License.
+  ~
+  ~ You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+  ~ an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations under the License.
+  ~
+  ~ If you need help or have any suggestions, feel free to join my Discord and head to #programming-help:
+  ~
+  ~ Discord: https://discord.jeff-media.com/
+  ~
+  ~ If you find this library helpful or if you're using it one of your paid plugins, please consider leaving a donation
+  ~ to support the further development of this project :)
+  ~
+  ~ Donations: https://paypal.me/mfnalex
+  -->
+
+<body>
+<p>
+    <b>CustomBlockData</b> is a library for the Bukkit API to provide a {@link org.bukkit.persistence.PersistentDataContainer}
+    for every Block in the world.
+</p>
+<p>
+    It does not need any files or databases. All data is stored inside the chunk's PersistentDataContainer and is
+    persistent after server restart. CustomBlockData can also automatically delete your custom data when a block
+    gets broken, move your data if the block gets moved by pistons, etc. By default, however, and for backward compatibility reasons, data stored inside blocks is independent of the underlying block.
+    That means: if you store some data inside a dirt block, and that block is now pushed by a piston, then the information
+    will still reside in the old block's location, unless you have enabled this feature explicitly using {@link com.jeff_media.customblockdata.CustomBlockData#registerListener(Plugin)}.
+</p>
+<p>
+    There are a few things you should keep in mind when using this library:
+</p>
+<ul>
+    <li>
+        All data you add to a block gets saved into the {@link org.bukkit.Chunk}'s PersistentDataContainer, which in
+        return is saved directly into your {@link org.bukkit.World}'s region files.
+    </li>
+    <li>
+        This library is not intended to store excessive amounts of data. With "excessive amounts", I am
+        talking about tens or hundreds of Megabytes per Chunk.
+    </li>
+</ul>
+<h1>Need more PersistentDataTypes?</h1>
+<p>
+    If you feel limited by the existing PersistentDataTypes, take a look at my <b><a href="https://github.com/JEFF-Media-GbR/MorePersistentDataTypes">MorePersistentDataTypes</a></b> library.
+    It doesn't only add more than 40 new PersistentDataTypes, but also <b>allows to you to store any kind of Collection, Map or Array</b>
+    inside the PersistentDataContainer. Of course it also supports nested Maps and Collections like for example
+    Map&lt;String&lt;Map&lt;Integer,ItemStack&gt;&gt;. You can find that library on <a href="https://github.com/JEFF-Media-GbR/MorePersistentDataTypes">GitHub</a>
+    and on <a href="https://www.spigotmc.org/threads/more-persistent-data-types-collections-maps-and-arrays-for-pdc.520677/">SpigotMC</a>.
+</p>
+</body>
