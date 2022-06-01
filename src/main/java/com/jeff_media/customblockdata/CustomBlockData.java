@@ -14,6 +14,8 @@
 
 package com.jeff_media.customblockdata;
 
+import com.jeff_media.customblockdata.internal.CustomBlockDataListener;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -22,6 +24,7 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,6 +51,20 @@ import java.util.stream.Collectors;
  */
 public class CustomBlockData implements PersistentDataContainer {
 
+    private static final PersistentDataType<?,?>[] PRIMITIVE_DATA_TYPES = new PersistentDataType<?,?>[] {
+            PersistentDataType.BYTE,
+            PersistentDataType.SHORT,
+            PersistentDataType.INTEGER,
+            PersistentDataType.LONG,
+            PersistentDataType.FLOAT,
+            PersistentDataType.DOUBLE,
+            PersistentDataType.STRING,
+            PersistentDataType.BYTE_ARRAY,
+            PersistentDataType.INTEGER_ARRAY,
+            PersistentDataType.LONG_ARRAY,
+            PersistentDataType.TAG_CONTAINER_ARRAY,
+            PersistentDataType.TAG_CONTAINER
+    };
     private static final Pattern KEY_REGEX = Pattern.compile("^x(\\d+)y(-?\\d+)z(\\d+)$");
     private static final int CHUNK_MIN_XZ = 0;
     private static final int CHUNK_MAX_XZ = 15;
@@ -55,6 +72,10 @@ public class CustomBlockData implements PersistentDataContainer {
     private final PersistentDataContainer pdc;
     private final Chunk chunk;
     private final NamespacedKey key;
+
+    public static void registerListener(Plugin plugin) {
+        Bukkit.getPluginManager().registerEvents(new CustomBlockDataListener(plugin), plugin);
+    }
 
     static {
         try {
@@ -250,6 +271,22 @@ public class CustomBlockData implements PersistentDataContainer {
     @Override
     public PersistentDataAdapterContext getAdapterContext() {
         return pdc.getAdapterContext();
+    }
+
+    public static PersistentDataType<?,?> getDataType(PersistentDataContainer pdc, NamespacedKey key) {
+        for(PersistentDataType<?,?> dataType : PRIMITIVE_DATA_TYPES) {
+            if(pdc.has(key, dataType)) return dataType;
+        }
+        return null;
+    }
+
+    public void copyTo(Block block, Plugin plugin) {
+        CustomBlockData newCbd = new CustomBlockData(block, plugin);
+        getKeys().forEach(key -> {
+            PersistentDataType dataType = getDataType(this, key);
+            if(dataType == null) return;
+            newCbd.set(key, dataType, get(key, dataType));
+        });
     }
 }
 
