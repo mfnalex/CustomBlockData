@@ -62,8 +62,8 @@ the `<configuration>` section of your maven-shade-plugin declaration:
 ```xml
 <relocations>
     <relocation>
-        <pattern>com.jeff_media.customblockdata.CustomBlockData</pattern>
-        <shadedPattern>YOUR.PACKAGE.CustomBlockData</shadedPattern>
+        <pattern>com.jeff_media.customblockdata</pattern>
+        <shadedPattern>YOUR.PACKAGE.customblockdata</shadedPattern>
     </relocation>
 </relocations>
 ```
