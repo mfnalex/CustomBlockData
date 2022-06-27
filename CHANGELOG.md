@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+- When using the integrated Listener, CustomBlockData will not remove a block's data in BlockPlaceEvent if the data was changed in the same tick. This prevents data "not being saved" if you set the data in BlockPlaceEvent.
+- Failing to relocate the CustomBlockData package will now print a nag message to console
+
 ## 2.0.0
 - CustomBlockData can now automatically keep track of changes made to blocks.
   - It can automatically remove custom block data when a block gets broken, replaced, has melted, etc

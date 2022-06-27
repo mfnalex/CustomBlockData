@@ -107,7 +107,9 @@ final class BlockDataListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
-        callAndRemove(event);
+        if(!CustomBlockData.isDirty(event.getBlock())) {
+            callAndRemove(event);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

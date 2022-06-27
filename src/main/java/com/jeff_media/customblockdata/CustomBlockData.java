@@ -29,6 +29,8 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.BlockVector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,6 +50,21 @@ import java.util.stream.Collectors;
  * For more information about this please see {@link #registerListener(Plugin)}.
  */
 public class CustomBlockData implements PersistentDataContainer {
+
+    private static final char[] DEFAULT_PACKAGE = new char[] { 'c', 'o', 'm', '.', 'j', 'e', 'f', 'f', '_', 'm', 'e', 'd', 'i', 'a', '.', 'c', 'u', 's', 't', 'o', 'm', 'b', 'l', 'o', 'c', 'k', 'd', 'a', 't', 'a'};
+
+    static {
+        checkRelocation();
+    }
+
+    private static void checkRelocation() {
+        if (CustomBlockData.class.getPackage().getName().equals(new String(DEFAULT_PACKAGE))) {
+            JavaPlugin plugin = JavaPlugin.getProvidingPlugin(CustomBlockData.class);
+            plugin.getLogger().warning("Nag author(s) " + String.join(", ", plugin.getDescription().getAuthors()) + " of plugin " + plugin.getName() + " for not relocating the CustomBlockData package.");
+        }
+    }
+
+    private static final Set<Map.Entry<UUID, BlockVector>> DIRTY_BLOCKS = new HashSet<>();
 
     private static final PersistentDataType<?, ?>[] PRIMITIVE_DATA_TYPES = new PersistentDataType<?, ?>[]{
             PersistentDataType.BYTE,
@@ -82,6 +99,10 @@ public class CustomBlockData implements PersistentDataContainer {
     private final Chunk chunk;
     private final NamespacedKey key;
 
+    private final Map.Entry<UUID,BlockVector> blockEntry;
+
+    private final Plugin plugin;
+
     /**
      * Gets the PersistentDataContainer associated with the given block and plugin
      *
@@ -92,6 +113,33 @@ public class CustomBlockData implements PersistentDataContainer {
         this.chunk = block.getChunk();
         this.key = getKey(plugin, block);
         this.pdc = getPersistentDataContainer();
+        this.blockEntry = getBlockEntry(block);
+        this.plugin = plugin;
+    }
+
+    private static Map.Entry<UUID, BlockVector> getBlockEntry(final @NotNull Block block) {
+        final UUID uuid = block.getWorld().getUID();
+        final BlockVector blockVector = new BlockVector(block.getX(), block.getY(), block.getZ());
+        return new AbstractMap.SimpleEntry<>(uuid, blockVector);
+    }
+
+    /**
+     * Gets the Block associated with this CustomBlockData, or null if the world is no longer loaded.
+     */
+    public @Nullable Block getBlock() {
+        World world = Bukkit.getWorld(blockEntry.getKey());
+        if(world == null) return null;
+        BlockVector vector = blockEntry.getValue();
+        return world.getBlockAt(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
+    }
+
+    static boolean isDirty(Block block) {
+        return DIRTY_BLOCKS.contains(getBlockEntry(block));
+    }
+
+    static void setDirty(Plugin plugin, Map.Entry<UUID,BlockVector> blockEntry) {
+            DIRTY_BLOCKS.add(blockEntry);
+            Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
     }
 
     /**
@@ -124,6 +172,8 @@ public class CustomBlockData implements PersistentDataContainer {
         this.chunk = block.getChunk();
         this.key = new NamespacedKey(namespace, getKey(block));
         this.pdc = getPersistentDataContainer();
+        this.plugin = JavaPlugin.getProvidingPlugin(CustomBlockData.class);
+        this.blockEntry = getBlockEntry(block);
     }
 
     private static NamespacedKey getKey(Plugin plugin, Block block) {
@@ -282,6 +332,7 @@ public class CustomBlockData implements PersistentDataContainer {
      * Saves the block's {@link PersistentDataContainer} inside the chunk's PersistentDataContainer
      */
     private void save() {
+        setDirty(plugin,blockEntry);
         if (pdc.isEmpty()) {
             chunk.getPersistentDataContainer().remove(key);
         } else {
