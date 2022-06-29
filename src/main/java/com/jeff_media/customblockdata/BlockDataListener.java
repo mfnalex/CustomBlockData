@@ -141,9 +141,9 @@ final class BlockDataListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPiston(BlockPistonRetractEvent event) {
-        BlockFace direction = event.getDirection().getOppositeFace();
-        if(CustomBlockData.hasCustomBlockData(event.getBlock().getRelative(direction), plugin)) {
-            getCbd(event.getBlock()).clear();
+        Block pistonHead = event.getBlock().getRelative(event.getDirection().getOppositeFace());
+        if(CustomBlockData.hasCustomBlockData(pistonHead, plugin)) {
+            getCbd(pistonHead).clear();
         }
         onPiston(event.getBlocks(), event);
     }
