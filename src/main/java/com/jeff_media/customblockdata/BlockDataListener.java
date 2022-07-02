@@ -106,7 +106,7 @@ final class BlockDataListener implements Listener {
     /*
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
-        callAndRemoveBlockList(List.copyOf(getRemovedBlocks(event.getBlock(), true)), event);
+        callAndRemove(event);
     }
      */
 
