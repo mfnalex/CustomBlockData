@@ -100,9 +100,22 @@ final class BlockDataListener implements Listener {
         }
     }
 
+    /**
+     * BlockPhysicsEvent is used for essentially the same thing but more precise
+     */
+    /*
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
-        callAndRemove(event);
+        callAndRemoveBlockList(List.copyOf(getRemovedBlocks(event.getBlock(), true)), event);
+    }
+     */
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPhysics(BlockPhysicsEvent event) {
+        // event.getBlock().getType() returns air when the block is broken
+        if(event.getBlock().getType() == Material.AIR && CustomBlockData.hasCustomBlockData(event.getBlock(), plugin)) {
+            callAndRemove(event.getBlock(), event);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
