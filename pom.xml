@@ -27,7 +27,7 @@
     <groupId>com.jeff_media</groupId>
     <name>CustomBlockData</name>
     <artifactId>CustomBlockData</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
     <description>Bukkit API Library to add custom data to blocks</description>
     <url>https://github.com/JEFF-Media-GbR/CustomBlockData/</url>
     <inceptionYear>2021</inceptionYear>
