@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.0
+- Added CustomBlockData#has(NamespacedKey)
+
 ## 2.0.1
 - When using the integrated Listener, CustomBlockData will not remove a block's data in BlockPlaceEvent if the data was changed in the same tick. This prevents data "not being saved" if you set the data in BlockPlaceEvent.
 - Failing to relocate the CustomBlockData package will now print a nag message to console
