@@ -113,7 +113,7 @@ final class BlockDataListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysics(BlockPhysicsEvent event) {
         // event.getBlock().getType() returns air when the block is broken
-        if(event.getBlock().getType() == Material.AIR) {
+        if(event.getBlock().getType() == Material.AIR && CustomBlockData.hasCustomBlockData(event.getBlock(), plugin)) {
             callAndRemove(event.getBlock(), event);
         }
     }
