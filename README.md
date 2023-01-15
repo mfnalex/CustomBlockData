@@ -68,6 +68,36 @@ the `<configuration>` section of your maven-shade-plugin declaration:
 </relocations>
 ```
 
+## Gradle
+
+**Repository**
+
+```groovy
+repositories {
+    maven {
+      url = 'https://hub.jeff-media.com/nexus/repository/jeff-media-public/'
+    }
+}
+```
+
+**Dependencies**
+```groovy
+dependencies {
+    implementation 'com.jeff_media:CustomBlockData:2.1.0'
+}
+```
+
+**Shading & Relocating**
+
+You must shade (and you should relocate) the `CustomBlockData` class. You will need Shadow found on [here](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow). Add the following to your shadowJar section!
+
+```groovy
+shadowJar {
+    relocate 'com.jeff_media.customblockdata', 'your.package.customblockdata'
+}
+```
+
+
 ## Usage
 
 To get a block's PersistentDataContainer, all you have to do is create an instance of `CustomBlockData` providing the block and
