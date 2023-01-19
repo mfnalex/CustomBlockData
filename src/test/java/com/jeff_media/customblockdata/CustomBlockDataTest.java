@@ -28,9 +28,9 @@ import org.bukkit.block.Block;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 
 public class CustomBlockDataTest {
 
@@ -59,6 +59,6 @@ public class CustomBlockDataTest {
         Block block = world.getBlockAt(0,0,0);
         CustomBlockData cbd = new CustomBlockData(block, plugin);
         cbd.set(key, PersistentDataType.STRING, string);
-        Assertions.assertEquals(string, cbd.get(key, PersistentDataType.STRING));
+        Assert.assertEquals(string, cbd.get(key, PersistentDataType.STRING));
     }
 }
