@@ -35,6 +35,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -378,7 +382,7 @@ public class CustomBlockData implements PersistentDataContainer {
         return pdc.has(namespacedKey, persistentDataType);
     }
 
-	// Required for Paper users
+	@Override
     public boolean has(final @NotNull NamespacedKey namespacedKey) {
 		for(PersistentDataType<?, ?> type : PRIMITIVE_DATA_TYPES) {
 			if(pdc.has(namespacedKey, type)) return true;
@@ -423,20 +427,21 @@ public class CustomBlockData implements PersistentDataContainer {
 
     @NotNull
     @Override
+    @PaperOnly
     public byte[] serializeToBytes() throws IOException {
-        return new byte[0];
+        return pdc.serializeToBytes();
     }
 
-    @NotNull
     @Override
-    public void readFromBytes(byte[] bytes, boolean b) throws IOException {
-
+    @PaperOnly
+    public void readFromBytes(byte[] bytes, boolean clear) throws IOException {
+        pdc.readFromBytes(bytes, clear);
     }
 
-    @NotNull
     @Override
+    @PaperOnly
     public void readFromBytes(byte[] bytes) throws IOException {
-        PersistentDataContainer.super.readFromBytes(bytes);
+        pdc.readFromBytes(bytes);
     }
 
     /**
@@ -475,5 +480,12 @@ public class CustomBlockData implements PersistentDataContainer {
             }
         };
     }
+
+    /**
+     * Indicates a method that only works on Paper and forks, but not on Spigot or CraftBukkit
+     */
+    @Retention(RetentionPolicy.SOURCE)
+    @Target(ElementType.METHOD)
+    public @interface PaperOnly { }
 }
 

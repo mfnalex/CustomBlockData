@@ -110,14 +110,10 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.3.1</version>
                 <configuration>
-                    <!--                    <additionalOptions>-->
-                    <!--                        <additionalOption>-Xdoclint:none</additionalOption>-->
-                    <!--                    </additionalOptions>-->
                     <links>
                         <link>https://hub.spigotmc.org/javadocs/bukkit/</link>
                         <link>https://guava.dev/releases/31.0.1-jre/api/docs/</link>
                         <link>https://javadoc.io/doc/org.yaml/snakeyaml/1.30/</link>
-                        <!--<link>https://javadoc.io/doc/org.jetbrains/annotations-java5/23.0.0/</link>-->
                     </links>
                 </configuration>
                 <executions>
@@ -204,8 +200,14 @@
         </dependency>
         <dependency>
             <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.18</artifactId>
-            <version>1.24.1</version>
+            <artifactId>MockBukkit-v1.19</artifactId>
+            <version>2.144.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
