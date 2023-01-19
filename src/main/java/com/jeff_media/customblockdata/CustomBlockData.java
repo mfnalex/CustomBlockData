@@ -429,21 +429,36 @@ public class CustomBlockData implements PersistentDataContainer {
         return pdc.getAdapterContext();
     }
 
+    /**
+     * @see PersistentDataContainer#serializeToBytes()
+     * @deprecated Paper-only
+     */
     @NotNull
     @Override
     @PaperOnly
+    @Deprecated
     public byte[] serializeToBytes() throws IOException {
         return pdc.serializeToBytes();
     }
 
+    /**
+     * @see PersistentDataContainer#readFromBytes(byte[], boolean) ()
+     * @deprecated Paper-only
+     */
     @Override
     @PaperOnly
+    @Deprecated
     public void readFromBytes(byte[] bytes, boolean clear) throws IOException {
         pdc.readFromBytes(bytes, clear);
     }
 
+    /**
+     * @see PersistentDataContainer#readFromBytes(byte[]) ()
+     * @deprecated Paper-only
+     */
     @Override
     @PaperOnly
+    @Deprecated
     public void readFromBytes(byte[] bytes) throws IOException {
         pdc.readFromBytes(bytes);
     }
@@ -488,8 +503,8 @@ public class CustomBlockData implements PersistentDataContainer {
     /**
      * Indicates a method that only works on Paper and forks, but not on Spigot or CraftBukkit
      */
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(RetentionPolicy.CLASS)
     @Target(ElementType.METHOD)
-    public @interface PaperOnly { }
+    private @interface PaperOnly { }
 }
 

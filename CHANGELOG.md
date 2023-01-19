@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.0
+- Added missing Paper API methods. They will only work on Paper, and as such are deprecated.
+  - byte[] CustomBlockData#serializeToBytes()
+  - void CustomBlockData#readFromBytes(byte[])
+  - void CustomBlockData#readFromBytes(byte[], boolean)
+
 ## 2.1.0
 - Added CustomBlockData#has(NamespacedKey)
 

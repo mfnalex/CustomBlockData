@@ -49,7 +49,7 @@ CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, incl
 <dependency>
     <groupId>com.jeff_media</groupId>
     <artifactId>CustomBlockData</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -83,7 +83,7 @@ repositories {
 **Dependencies**
 ```groovy
 dependencies {
-    implementation 'com.jeff_media:CustomBlockData:2.1.0'
+    implementation 'com.jeff_media:CustomBlockData:2.2.0'
 }
 ```
 
