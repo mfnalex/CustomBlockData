@@ -17,8 +17,9 @@
 </p>
 <!--- Buttons end -->
 <p align="center">
-<a href="https://hub.jeff-media.com/nexus/#browse/browse:jeff-media-public:com%2Fjeff_media%2FCustomBlockData">
-  <img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fhub.jeff-media.com%2Fnexus%2Frepository%2Fjeff-media-public%2Fcom%2Fjeff_media%2FCustomBlockData%2Fmaven-metadata.xml" alt="Maven" /></a>
+<a href="https://maven-badges.herokuapp.com/maven-central/com.jeff-media/custom-block-data">
+  <img src="https://maven-badges.herokuapp.com/maven-central/com.jeff-media/custom-block-data/badge.png
+" alt="Maven" /></a>
 <img src="https://img.shields.io/github/last-commit/jeff-media-gbr/customblockdata" />
 </p>
 
