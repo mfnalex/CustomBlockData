@@ -18,8 +18,7 @@
 <!--- Buttons end -->
 <p align="center">
 <a href="https://maven-badges.herokuapp.com/maven-central/com.jeff-media/custom-block-data">
-  <img src="https://maven-badges.herokuapp.com/maven-central/com.jeff-media/custom-block-data/badge.png
-" alt="Maven" /></a>
+  <img src="https://maven-badges.herokuapp.com/maven-central/com.jeff-media/custom-block-data/badge.png" alt="Maven" /></a>
 <img src="https://img.shields.io/github/last-commit/jeff-media-gbr/customblockdata" />
 </p>
 
