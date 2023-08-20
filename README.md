@@ -5,7 +5,7 @@
   <a href="https://www.spigotmc.org/threads/custom-block-data-persistentdatacontainer-for-blocks.512422/">
     <img src="https://static.jeff-media.com/img/button_spigotmc_thread.png?3" alt="SpigotMC Thread">
   </a>
-  <a href="https://hub.jeff-media.com/javadocs/customblockdata">
+  <a href="https://hub.jeff-media.com/javadocs/com/jeff-media/custom-block-data/2.2.1/">
     <img src="https://static.jeff-media.com/img/button_javadocs.png?3" alt="Javadocs">
   </a>
   <a href="https://discord.jeff-media.com/">
@@ -39,39 +39,47 @@ CustomBlockData is compatible with all Bukkit versions from 1.16.3 onwards, incl
   - You can make specific blocks protected from this, or listen to the cancellable `CustomBlockDataEvent`s 
   - (This is disabled by default for backwards compatibility - just call `CustomBlockData#registerListener(Plugin)` to enable it) 
 
-## Maven
-
-**Repository**
-
-```xml
-<repository>
-    <id>jeff-media-gbr</id>
-    <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
-</repository>
-```
-
-**Dependency**
+## Maven Dependency
+The dependency is available on Maven Central:
 ```xml
 <dependency>
-    <groupId>com.jeff_media</groupId>
-    <artifactId>CustomBlockData</artifactId>
-    <version>2.2.0</version>
+    <groupId>com.jeff-media</groupId>
+    <artifactId>custom-block-data</artifactId>
+    <version>2.2.1</version>
     <scope>compile</scope>
 </dependency>
 ```
 
 **Shading and relocating**
 
-You must shade (and you should relocate) the `CustomBlockData` class. Just add this to
-the `<configuration>` section of your maven-shade-plugin declaration:
+You must shade (and you should relocate) the `customblockdata` package.
 
 ```xml
-<relocations>
-    <relocation>
-        <pattern>com.jeff_media.customblockdata</pattern>
-        <shadedPattern>YOUR.PACKAGE.customblockdata</shadedPattern>
-    </relocation>
-</relocations>
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-shade-plugin</artifactId>
+      <version>3.5.0</version>
+      <configuration>
+        <relocations>
+          <relocation>
+            <pattern>com.jeff_media.customblockdata</pattern>
+            <shadedPattern>YOUR.PACKAGE.NAME.customblockdata</shadedPattern>
+          </relocation>
+        </relocations>
+      </configuration>
+      <executions>
+        <execution>
+          <phase>package</phase>
+          <goals>
+            <goal>shade</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
 ```
 
 ## Gradle
@@ -80,22 +88,20 @@ the `<configuration>` section of your maven-shade-plugin declaration:
 
 ```groovy
 repositories {
-    maven {
-      url = 'https://hub.jeff-media.com/nexus/repository/jeff-media-public/'
-    }
+    mavenCentral()
 }
 ```
 
 **Dependencies**
 ```groovy
 dependencies {
-    implementation 'com.jeff_media:CustomBlockData:2.2.0'
+    implementation 'com.jeff-media:custom-block-data:2.2.1'
 }
 ```
 
 **Shading & Relocating**
 
-You must shade (and you should relocate) the `CustomBlockData` class. You will need Shadow found on [here](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow). Add the following to your shadowJar section!
+You must shade (and you should relocate) the `customblockdata` package. You will need the Shadow plugin found [here](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow). Add the following to your shadowJar section!
 
 ```groovy
 shadowJar {
@@ -103,6 +109,11 @@ shadowJar {
 }
 ```
 
+Optionally, make the build task depend on shadowJar:
+
+```groovy
+build.dependsOn += shadowJar
+```
 
 ## Usage
 
@@ -113,17 +124,22 @@ the instance of your main class:
 PersistentDataContainer customBlockData = new CustomBlockData(block, plugin);
 ```
 
+If you want CustomBlockData to autimatically handle moving/removing block data for changed blocks (e.g. move data when a block gets moved with a piston, or to remove data when a player breaks a block, etc) you must call CustomBlockData.registerListener(Plugin) once in your onEnable().
+
 For more information about how to use it, just look at the [API docs for the PersistentDataContainer](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/persistence/PersistentDataContainer.html) or look at [this tutorial](https://www.spigotmc.org/threads/a-guide-to-1-14-persistentdataholder-api.371200/).
 
 ## Javadocs
 
-Javadocs can be found here: https://hub.jeff-media.com/javadocs/customblockdata/
+Javadocs can be found here: https://hub.jeff-media.com/javadocs/com/jeff-media/custom-block-data/2.2.1/
 
-## Example plugin
+[//]: # (## Example plugin)
 
-Click [here](https://github.com/JEFF-Media-GbR/CustomBlockData-Example) for an example plugin.
-It lets you left-click on a block to store your currently held ItemStack inside. Once the block is broken,
-it will drop the stored item.
+[//]: # ()
+[//]: # (Click [here]&#40;https://github.com/JEFF-Media-GbR/CustomBlockData-Example&#41; for an example plugin.)
+
+[//]: # (It lets you left-click on a block to store your currently held ItemStack inside. Once the block is broken,)
+
+[//]: # (it will drop the stored item.)
 
 ## Discord
 

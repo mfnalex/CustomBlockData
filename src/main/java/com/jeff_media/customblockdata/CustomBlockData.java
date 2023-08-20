@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 /**
  * Represents a {@link PersistentDataContainer} for a specific {@link Block}. Also provides some static utility methods
  * that can be used on every PersistentDataContainer.
- *
+ * <p>
  * By default, and for backward compatibility reasons, data stored inside blocks is independent of the underlying block.
  * That means: if you store some data inside a dirt block, and that block is now pushed by a piston, then the information
  * will still reside in the old block's location. <b>You can of course also make CustomBockData automatically take care of those situations</b>,
@@ -56,25 +56,19 @@ import java.util.stream.Collectors;
  */
 public class CustomBlockData implements PersistentDataContainer {
 
-    private static final char[] DEFAULT_PACKAGE = new char[] { 'c', 'o', 'm', '.', 'j', 'e', 'f', 'f', '_', 'm', 'e', 'd', 'i', 'a', '.', 'c', 'u', 's', 't', 'o', 'm', 'b', 'l', 'o', 'c', 'k', 'd', 'a', 't', 'a'};
+    /**
+     * The default package name that must be changed
+     */
+    private static final char[] DEFAULT_PACKAGE = new char[]{'c', 'o', 'm', '.', 'j', 'e', 'f', 'f', '_', 'm', 'e', 'd', 'i', 'a', '.', 'c', 'u', 's', 't', 'o', 'm', 'b', 'l', 'o', 'c', 'k', 'd', 'a', 't', 'a'};
 
-    static {
-        checkRelocation();
-    }
-
-    private static void checkRelocation() {
-        if (CustomBlockData.class.getPackage().getName().equals(new String(DEFAULT_PACKAGE))) {
-            try {
-                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(CustomBlockData.class);
-                plugin.getLogger().warning("Nag author(s) " + String.join(", ", plugin.getDescription().getAuthors()) + " of plugin " + plugin.getName() + " for not relocating the CustomBlockData package.");
-            } catch (IllegalArgumentException exception) {
-                // Could not get plugin
-            }
-        }
-    }
-
+    /**
+     * Set of "dirty block positions", that is blocks that have been modified and need to be saved to the chunk
+     */
     private static final Set<Map.Entry<UUID, BlockVector>> DIRTY_BLOCKS = new HashSet<>();
 
+    /**
+     * Builtin list of native PersistentDataTypes
+     */
     private static final PersistentDataType<?, ?>[] PRIMITIVE_DATA_TYPES = new PersistentDataType<?, ?>[]{
             PersistentDataType.BYTE,
             PersistentDataType.SHORT,
@@ -88,28 +82,70 @@ public class CustomBlockData implements PersistentDataContainer {
             PersistentDataType.LONG_ARRAY,
             PersistentDataType.TAG_CONTAINER_ARRAY,
             PersistentDataType.TAG_CONTAINER};
-    private static final NamespacedKey PERSISTENCE_KEY = Objects.requireNonNull(NamespacedKey.fromString("customblockdata:protected"),"Could not create persistence NamespacedKey");
+
+    /**
+     * NamespacedKey for the CustomBlockData "protected" key
+     */
+    private static final NamespacedKey PERSISTENCE_KEY = Objects.requireNonNull(NamespacedKey.fromString("customblockdata:protected"), "Could not create persistence NamespacedKey");
+
+    /**
+     * Regex used to identify valid CustomBlockData keys
+     */
     private static final Pattern KEY_REGEX = Pattern.compile("^x(\\d+)y(-?\\d+)z(\\d+)$");
+
+    /**
+     * The minimum X and Z coordinate of any block inside a chunk.
+     */
     private static final int CHUNK_MIN_XZ = 0;
-    private static final int CHUNK_MAX_XZ = 15;
+
+    /**
+     * The maximum X and Z coordinate of any block inside a chunk.
+     */
+    private static final int CHUNK_MAX_XZ = (2 << 3) -1;
+
+    /**
+     * Whether WorldInfo#getMinHeight() method exists. In some very specific versions, it's directly declared in World.
+     */
     private static final boolean HAS_MIN_HEIGHT_METHOD;
 
     static {
-        boolean classExists = false;
-        try {
-            Class.forName("org.bukkit.generator.WorldInfo");
-            classExists = true;
-        } catch (final ClassNotFoundException ignored) {
-        }
-        HAS_MIN_HEIGHT_METHOD = classExists;
+        checkRelocation();
     }
 
+    static {
+        boolean tmpHasMinHeightMethod = false;
+        try {
+            // Usually declared in WorldInfo, which World extends - except for some very specific versions
+            World.class.getMethod("getMinHeight");
+            tmpHasMinHeightMethod = true;
+        } catch (final ReflectiveOperationException ignored) {
+        }
+        HAS_MIN_HEIGHT_METHOD = tmpHasMinHeightMethod;
+    }
+
+    /**
+     * The Chunk PDC belonging to this CustomBlockData object
+     */
     private final PersistentDataContainer pdc;
+
+    /**
+     * The Chunk this CustomBlockData object belongs to
+     */
     private final Chunk chunk;
+
+    /**
+     * The NamespacedKey used to identify this CustomBlockData object inside the Chunk's PDC
+     */
     private final NamespacedKey key;
 
-    private final Map.Entry<UUID,BlockVector> blockEntry;
+    /**
+     * The Map.Entry containing the UUID of the block and its BlockVector for usage with {@link #DIRTY_BLOCKS}
+     */
+    private final Map.Entry<UUID, BlockVector> blockEntry;
 
+    /**
+     * The Plugin this CustomBlockData object belongs to
+     */
     private final Plugin plugin;
 
     /**
@@ -124,49 +160,6 @@ public class CustomBlockData implements PersistentDataContainer {
         this.pdc = getPersistentDataContainer();
         this.blockEntry = getBlockEntry(block);
         this.plugin = plugin;
-    }
-
-    private static Map.Entry<UUID, BlockVector> getBlockEntry(final @NotNull Block block) {
-        final UUID uuid = block.getWorld().getUID();
-        final BlockVector blockVector = new BlockVector(block.getX(), block.getY(), block.getZ());
-        return new AbstractMap.SimpleEntry<>(uuid, blockVector);
-    }
-
-    /**
-     * Gets the Block associated with this CustomBlockData, or null if the world is no longer loaded.
-     */
-    public @Nullable Block getBlock() {
-        World world = Bukkit.getWorld(blockEntry.getKey());
-        if(world == null) return null;
-        BlockVector vector = blockEntry.getValue();
-        return world.getBlockAt(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
-    }
-
-    static boolean isDirty(Block block) {
-        return DIRTY_BLOCKS.contains(getBlockEntry(block));
-    }
-
-    static void setDirty(Plugin plugin, Map.Entry<UUID,BlockVector> blockEntry) {
-            DIRTY_BLOCKS.add(blockEntry);
-            Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
-    }
-
-    /**
-     * Gets the PersistentDataContainer associated with this block.
-     *
-     * @return PersistentDataContainer of this block
-     */
-    @NotNull
-    private PersistentDataContainer getPersistentDataContainer() {
-        final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
-        final PersistentDataContainer blockPDC;
-        if (chunkPDC.has(key, PersistentDataType.TAG_CONTAINER)) {
-            blockPDC = chunkPDC.get(key, PersistentDataType.TAG_CONTAINER);
-            assert blockPDC != null;
-            return blockPDC;
-        }
-        blockPDC = chunkPDC.getAdapterContext().newPersistentDataContainer();
-        return blockPDC;
     }
 
     /**
@@ -185,28 +178,58 @@ public class CustomBlockData implements PersistentDataContainer {
         this.blockEntry = getBlockEntry(block);
     }
 
+    /**
+     * Prints a nag message when the CustomBlockData package is not relocated
+     */
+    private static void checkRelocation() {
+        if (CustomBlockData.class.getPackage().getName().equals(new String(DEFAULT_PACKAGE))) {
+            try {
+                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(CustomBlockData.class);
+                plugin.getLogger().warning("Nag author(s) " + String.join(", ", plugin.getDescription().getAuthors()) + " of plugin " + plugin.getName() + " for not relocating the CustomBlockData package.");
+            } catch (IllegalArgumentException exception) {
+                // Could not get plugin
+            }
+        }
+    }
+
+    /**
+     * Gets the block entry for this block used for {@link #DIRTY_BLOCKS}
+     * @param block Block
+     * @return Block entry
+     */
+    private static Map.Entry<UUID, BlockVector> getBlockEntry(final @NotNull Block block) {
+        final UUID uuid = block.getWorld().getUID();
+        final BlockVector blockVector = new BlockVector(block.getX(), block.getY(), block.getZ());
+        return new AbstractMap.SimpleEntry<>(uuid, blockVector);
+    }
+
+    /**
+     * Checks whether this block is flagged as "dirty"
+     * @param block Block
+     * @return Whether this block is flagged as "dirty"
+     */
+    static boolean isDirty(Block block) {
+        return DIRTY_BLOCKS.contains(getBlockEntry(block));
+    }
+
+    /**
+     * Sets this block as "dirty" and removes it from the list after the next tick
+     * @param plugin Plugin
+     * @param blockEntry Block entry
+     */
+    static void setDirty(Plugin plugin, Map.Entry<UUID, BlockVector> blockEntry) {
+        DIRTY_BLOCKS.add(blockEntry);
+        Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+    }
+
+    /**
+     * Gets the NamespacedKey for this block
+     * @param plugin Plugin
+     * @param block Block
+     * @return NamespacedKey
+     */
     private static NamespacedKey getKey(Plugin plugin, Block block) {
         return new NamespacedKey(plugin, getKey(block));
-    }
-
-    /**
-     * Gets whether this CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
-     * @see #registerListener(Plugin)
-     */
-    public boolean isProtected() {
-        return has(PERSISTENCE_KEY, DataType.BOOLEAN);
-    }
-
-    /**
-     * Sets whether this CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
-     * @see #registerListener(Plugin)
-     */
-    public void setProtected(boolean isProtected) {
-        if(isProtected) {
-            set(PERSISTENCE_KEY, DataType.BOOLEAN, true);
-        } else {
-            remove(PERSISTENCE_KEY);
-        }
     }
 
     /**
@@ -221,7 +244,6 @@ public class CustomBlockData implements PersistentDataContainer {
         final int y = block.getY();
         final int z = block.getZ() & 0x000F;
         return "x" + x + "y" + y + "z" + z;
-        //return String.format("x%dy%dz%d", x, y, z);
     }
 
     /**
@@ -259,11 +281,12 @@ public class CustomBlockData implements PersistentDataContainer {
 
     /**
      * Get if the given Block's CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
-     * @see #registerListener(Plugin)
+     *
      * @return true if the Block's CustomBlockData is protected, false if it doesn't have any CustomBlockData or it's not protected
+     * @see #registerListener(Plugin)
      */
     public static boolean isProtected(Block block, Plugin plugin) {
-        return new CustomBlockData(block,plugin).isProtected();
+        return new CustomBlockData(block, plugin).isProtected();
     }
 
     /**
@@ -312,9 +335,11 @@ public class CustomBlockData implements PersistentDataContainer {
     @NotNull
     private static Set<Block> getBlocksWithCustomData(final @NotNull Chunk chunk, final @NotNull NamespacedKey namespace) {
         final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
-        return chunkPDC.getKeys().stream().filter(key -> key.getNamespace().equals(namespace.getNamespace())).map(key -> getBlockFromKey(key, chunk)).filter(Objects::nonNull).collect(Collectors.toSet());
+        return chunkPDC.getKeys().stream().filter(key -> key.getNamespace().equals(namespace.getNamespace()))
+                .map(key -> getBlockFromKey(key, chunk))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
-
 
     /**
      * Returns a {@link Set} of all blocks in this {@link Chunk} containing Custom Block Data created by the given plugin
@@ -330,6 +355,68 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     /**
+     * Gets the proper primitive {@link PersistentDataType} for the given {@link NamespacedKey} in the given {@link PersistentDataContainer}
+     *
+     * @return The primitive PersistentDataType for the given key, or null if the key doesn't exist
+     */
+    public static PersistentDataType<?, ?> getDataType(PersistentDataContainer pdc, NamespacedKey key) {
+        for (PersistentDataType<?, ?> dataType : PRIMITIVE_DATA_TYPES) {
+            if (pdc.has(key, dataType)) return dataType;
+        }
+        return null;
+    }
+
+    /**
+     * Gets the Block associated with this CustomBlockData, or null if the world is no longer loaded.
+     */
+    public @Nullable Block getBlock() {
+        World world = Bukkit.getWorld(blockEntry.getKey());
+        if (world == null) return null;
+        BlockVector vector = blockEntry.getValue();
+        return world.getBlockAt(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
+    }
+
+    /**
+     * Gets the PersistentDataContainer associated with this block.
+     *
+     * @return PersistentDataContainer of this block
+     */
+    @NotNull
+    private PersistentDataContainer getPersistentDataContainer() {
+        final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
+        final PersistentDataContainer blockPDC;
+        if (chunkPDC.has(key, PersistentDataType.TAG_CONTAINER)) {
+            blockPDC = chunkPDC.get(key, PersistentDataType.TAG_CONTAINER);
+            assert blockPDC != null;
+            return blockPDC;
+        }
+        blockPDC = chunkPDC.getAdapterContext().newPersistentDataContainer();
+        return blockPDC;
+    }
+
+    /**
+     * Gets whether this CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
+     *
+     * @see #registerListener(Plugin)
+     */
+    public boolean isProtected() {
+        return has(PERSISTENCE_KEY, DataType.BOOLEAN);
+    }
+
+    /**
+     * Sets whether this CustomBlockData is protected. Protected CustomBlockData will not be changed by any Bukkit Events
+     *
+     * @see #registerListener(Plugin)
+     */
+    public void setProtected(boolean isProtected) {
+        if (isProtected) {
+            set(PERSISTENCE_KEY, DataType.BOOLEAN, true);
+        } else {
+            remove(PERSISTENCE_KEY);
+        }
+    }
+
+    /**
      * Removes all CustomBlockData and disables the protection status ({@link #setProtected(boolean)}
      */
     public void clear() {
@@ -341,7 +428,7 @@ public class CustomBlockData implements PersistentDataContainer {
      * Saves the block's {@link PersistentDataContainer} inside the chunk's PersistentDataContainer
      */
     private void save() {
-        setDirty(plugin,blockEntry);
+        setDirty(plugin, blockEntry);
         if (pdc.isEmpty()) {
             chunk.getPersistentDataContainer().remove(key);
         } else {
@@ -363,18 +450,6 @@ public class CustomBlockData implements PersistentDataContainer {
         });
     }
 
-    /**
-     * Gets the proper primitive {@link PersistentDataType} for the given {@link NamespacedKey} in the given {@link PersistentDataContainer}
-     *
-     * @return The primitive PersistentDataType for the given key, or null if the key doesn't exist
-     */
-    public static PersistentDataType<?, ?> getDataType(PersistentDataContainer pdc, NamespacedKey key) {
-        for (PersistentDataType<?, ?> dataType : PRIMITIVE_DATA_TYPES) {
-            if (pdc.has(key, dataType)) return dataType;
-        }
-        return null;
-    }
-
     @Override
     public <T, Z> void set(final @NotNull NamespacedKey namespacedKey, final @NotNull PersistentDataType<T, Z> persistentDataType, final @NotNull Z z) {
         pdc.set(namespacedKey, persistentDataType, z);
@@ -386,12 +461,12 @@ public class CustomBlockData implements PersistentDataContainer {
         return pdc.has(namespacedKey, persistentDataType);
     }
 
-	@Override
+    @Override
     public boolean has(final @NotNull NamespacedKey namespacedKey) {
-		for(PersistentDataType<?, ?> type : PRIMITIVE_DATA_TYPES) {
-			if(pdc.has(namespacedKey, type)) return true;
-		}
-		return false;
+        for (PersistentDataType<?, ?> type : PRIMITIVE_DATA_TYPES) {
+            if (pdc.has(namespacedKey, type)) return true;
+        }
+        return false;
     }
 
     @Nullable
@@ -472,8 +547,16 @@ public class CustomBlockData implements PersistentDataContainer {
         return getDataType(this, key);
     }
 
+    /**
+     * Indicates a method that only works on Paper and forks, but not on Spigot or CraftBukkit
+     */
+    @Retention(RetentionPolicy.CLASS)
+    @Target(ElementType.METHOD)
+    private @interface PaperOnly {
+    }
+
     private static final class DataType {
-        private static final PersistentDataType<Byte,Boolean> BOOLEAN = new PersistentDataType<Byte, Boolean>() {
+        private static final PersistentDataType<Byte, Boolean> BOOLEAN = new PersistentDataType<Byte, Boolean>() {
             @NotNull
             @Override
             public Class<Byte> getPrimitiveType() {
@@ -499,12 +582,5 @@ public class CustomBlockData implements PersistentDataContainer {
             }
         };
     }
-
-    /**
-     * Indicates a method that only works on Paper and forks, but not on Spigot or CraftBukkit
-     */
-    @Retention(RetentionPolicy.CLASS)
-    @Target(ElementType.METHOD)
-    private @interface PaperOnly { }
 }
 
