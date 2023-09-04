@@ -384,14 +384,9 @@ public class CustomBlockData implements PersistentDataContainer {
     @NotNull
     private PersistentDataContainer getPersistentDataContainer() {
         final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
-        final PersistentDataContainer blockPDC;
-        if (chunkPDC.has(key, PersistentDataType.TAG_CONTAINER)) {
-            blockPDC = chunkPDC.get(key, PersistentDataType.TAG_CONTAINER);
-            assert blockPDC != null;
-            return blockPDC;
-        }
-        blockPDC = chunkPDC.getAdapterContext().newPersistentDataContainer();
-        return blockPDC;
+        final PersistentDataContainer blockPDC = chunkPDC.get(key, PersistentDataType.TAG_CONTAINER);
+        if (blockPDC != null) return blockPDC;
+        return chunkPDC.getAdapterContext().newPersistentDataContainer();
     }
 
     /**
