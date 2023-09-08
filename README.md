@@ -5,7 +5,7 @@
   <a href="https://www.spigotmc.org/threads/custom-block-data-persistentdatacontainer-for-blocks.512422/">
     <img src="https://static.jeff-media.com/img/button_spigotmc_thread.png?3" alt="SpigotMC Thread">
   </a>
-  <a href="https://hub.jeff-media.com/javadocs/com/jeff-media/custom-block-data/2.2.1/">
+  <a href="https://hub.jeff-media.com/javadocs/com/jeff-media/custom-block-data/2.2.2/">
     <img src="https://static.jeff-media.com/img/button_javadocs.png?3" alt="Javadocs">
   </a>
   <a href="https://discord.jeff-media.com/">
@@ -45,7 +45,7 @@ The dependency is available on Maven Central:
 <dependency>
     <groupId>com.jeff-media</groupId>
     <artifactId>custom-block-data</artifactId>
-    <version>2.2.1</version>
+    <version>2.2.2</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -95,7 +95,7 @@ repositories {
 **Dependencies**
 ```groovy
 dependencies {
-    implementation 'com.jeff-media:custom-block-data:2.2.1'
+    implementation 'com.jeff-media:custom-block-data:2.2.2'
 }
 ```
 
@@ -130,7 +130,7 @@ For more information about how to use it, just look at the [API docs for the Per
 
 ## Javadocs
 
-Javadocs can be found here: https://hub.jeff-media.com/javadocs/com/jeff-media/custom-block-data/2.2.1/
+Javadocs can be found here: https://hub.jeff-media.com/javadocs/com/jeff-media/custom-block-data/2.2.2/
 
 [//]: # (## Example plugin)
 
