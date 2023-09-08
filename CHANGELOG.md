@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.2
+- [Merged #12](https://github.com/mfnalex/CustomBlockData/pull/12)
+
 ## 2.2.0
 - Added missing Paper API methods. They will only work on Paper, and as such are deprecated.
   - byte[] CustomBlockData#serializeToBytes()
