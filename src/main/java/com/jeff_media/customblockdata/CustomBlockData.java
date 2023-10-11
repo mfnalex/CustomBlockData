@@ -213,11 +213,16 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     /**
-     * Sets this block as "dirty" and removes it from the list after the next tick
+     * Sets this block as "dirty" and removes it from the list after the next tick.
+     * <p>
+     * If the plugin is disabled, this method will do nothing, to prevent the IllegalPluginAccessException.
      * @param plugin Plugin
      * @param blockEntry Block entry
      */
     static void setDirty(Plugin plugin, Map.Entry<UUID, BlockVector> blockEntry) {
+        if (!plugin.isEnabled()) //checks if the plugin is disabled to prevent the IllegalPluginAccessException
+            return;
+
         DIRTY_BLOCKS.add(blockEntry);
         Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
     }
