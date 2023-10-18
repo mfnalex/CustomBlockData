@@ -1,0 +1,78 @@
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1670753338833)
++++ b/.idea/jarRepositories.xml	(date 1670753338833)
+@@ -0,0 +1,30 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Central Repository" />
++      <option name="url" value="https://repo.maven.apache.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jeff-media-public" />
++      <option name="name" value="jeff-media-public" />
++      <option name="url" value="https://hub.jeff-media.com/nexus/repository/jeff-media-public/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="spigot-repo" />
++      <option name="name" value="spigot-repo" />
++      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
+Index: src/main/java/com/jeff_media/customblockdata/BlockDataListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\r\n * Copyright (c) 2022 Alexander Majka (mfnalex) / JEFF Media GbR\r\n *\r\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with\r\n * the License.\r\n *\r\n * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\r\n *\r\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on\r\n * an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the\r\n * specific language governing permissions and limitations under the License.\r\n *\r\n * If you need help or have any suggestions, feel free to join my Discord and head to #programming-help:\r\n *\r\n * Discord: https://discord.jeff-media.com/\r\n *\r\n * If you find this library helpful or if you're using it one of your paid plugins, please consider leaving a donation\r\n * to support the further development of this project :)\r\n *\r\n * Donations: https://paypal.me/mfnalex\r\n */\r\n\r\npackage com.jeff_media.customblockdata;\r\n\r\nimport com.jeff_media.customblockdata.events.CustomBlockDataMoveEvent;\r\nimport com.jeff_media.customblockdata.events.CustomBlockDataRemoveEvent;\r\nimport org.bukkit.Bukkit;\r\nimport org.bukkit.Material;\r\nimport org.bukkit.block.Block;\r\nimport org.bukkit.block.BlockFace;\r\nimport org.bukkit.block.BlockState;\r\nimport org.bukkit.event.Event;\r\nimport org.bukkit.event.EventHandler;\r\nimport org.bukkit.event.EventPriority;\r\nimport org.bukkit.event.Listener;\r\nimport org.bukkit.event.block.*;\r\nimport org.bukkit.event.entity.EntityChangeBlockEvent;\r\nimport org.bukkit.event.entity.EntityExplodeEvent;\r\nimport org.bukkit.event.world.StructureGrowEvent;\r\nimport org.bukkit.plugin.Plugin;\r\n\r\nimport java.util.*;\r\nimport java.util.function.Predicate;\r\n\r\nfinal class BlockDataListener implements Listener {\r\n\r\n    private final Plugin plugin;\r\n    private final Predicate<Block> customDataPredicate;\r\n\r\n    public BlockDataListener(Plugin plugin) {\r\n        this.plugin = plugin;\r\n        this.customDataPredicate = block -> CustomBlockData.hasCustomBlockData(block, plugin);\r\n    }\r\n\r\n    private CustomBlockData getCbd(BlockEvent event) {\r\n        return getCbd(event.getBlock());\r\n    }\r\n\r\n    private CustomBlockData getCbd(Block block) {\r\n        return new CustomBlockData(block, plugin);\r\n    }\r\n\r\n    private void callAndRemove(BlockEvent blockEvent) {\r\n        if (callEvent(blockEvent)) {\r\n            getCbd(blockEvent).clear();\r\n        }\r\n    }\r\n\r\n    private boolean callEvent(BlockEvent blockEvent) {\r\n        return callEvent(blockEvent.getBlock(), blockEvent);\r\n    }\r\n\r\n    private boolean callEvent(Block block, Event bukkitEvent) {\r\n        if(!CustomBlockData.hasCustomBlockData(block, plugin) || CustomBlockData.isProtected(block, plugin)) {\r\n            return false;\r\n        }\r\n\r\n        CustomBlockDataRemoveEvent cbdEvent = new CustomBlockDataRemoveEvent(plugin, block, bukkitEvent);\r\n        Bukkit.getPluginManager().callEvent(cbdEvent);\r\n\r\n        return !cbdEvent.isCancelled();\r\n    }\r\n\r\n    private void callAndRemoveBlockStateList(List<BlockState> blockStates, Event bukkitEvent) {\r\n        blockStates.stream()\r\n                .map(BlockState::getBlock)\r\n                .filter(customDataPredicate)\r\n                .forEach(block -> callAndRemove(block,bukkitEvent));\r\n    }\r\n\r\n    private void callAndRemoveBlockList(List<Block> blocks, Event bukkitEvent) {\r\n        blocks.stream()\r\n                .filter(customDataPredicate)\r\n                .forEach(block -> callAndRemove(block,bukkitEvent));\r\n    }\r\n\r\n    private void callAndRemove(Block block, Event bukkitEvent) {\r\n        if (callEvent(block, bukkitEvent)) {\r\n            getCbd(block).clear();\r\n        }\r\n    }\r\n\r\n    /**\r\n     * BlockPhysicsEvent is used for essentially the same thing but more precise\r\n     */\r\n    /*\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onBreak(BlockBreakEvent event) {\r\n        callAndRemove(event);\r\n    }\r\n     */\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onPhysics(BlockPhysicsEvent event) {\r\n        // event.getBlock().getType() returns air when the block is broken\r\n        if(event.getBlock().getType() == Material.AIR) {\r\n            callAndRemove(event.getBlock(), event);\r\n        }\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onPlace(BlockPlaceEvent event) {\r\n        if(!CustomBlockData.isDirty(event.getBlock())) {\r\n            callAndRemove(event);\r\n        }\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onEntity(EntityChangeBlockEvent event) {\r\n        if(event.getTo() != event.getBlock().getType()) {\r\n            callAndRemove(event.getBlock(), event);\r\n        }\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onExplode(BlockExplodeEvent event) {\r\n        callAndRemoveBlockList(event.blockList(),event);\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onExplode(EntityExplodeEvent event) {\r\n        callAndRemoveBlockList(event.blockList(), event);\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onBurn(BlockBurnEvent event) {\r\n        callAndRemove(event);\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onPiston(BlockPistonExtendEvent event) {\r\n        onPiston(event.getBlocks(), event);\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onPiston(BlockPistonRetractEvent event) {\r\n        Block pistonHead = event.getBlock().getRelative(event.getDirection().getOppositeFace());\r\n        Block destinationBlock = pistonHead.getRelative(event.getDirection());\r\n        if(CustomBlockData.hasCustomBlockData(pistonHead, plugin)) {\r\n            CustomBlockDataMoveEvent moveEvent = new CustomBlockDataMoveEvent(plugin, pistonHead, destinationBlock, event);\r\n            Bukkit.getPluginManager().callEvent(moveEvent);\r\n            if (moveEvent.isCancelled()) return;\r\n            CustomBlockData cbd = getCbd(pistonHead);\r\n            cbd.copyTo(pistonHead.getRelative(event.getDirection()), plugin);\r\n            cbd.clear();\r\n        }\r\n        onPiston(event.getBlocks(), event);\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onFade(BlockFadeEvent event) {\r\n        if(event.getBlock().getType() == Material.FIRE) return;\r\n        if(event.getNewState().getType() != event.getBlock().getType()) {\r\n            callAndRemove(event);\r\n        }\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onStructure(StructureGrowEvent event) {\r\n        callAndRemoveBlockStateList(event.getBlocks(), event);\r\n    }\r\n\r\n    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)\r\n    public void onFertilize(BlockFertilizeEvent event) {\r\n        callAndRemoveBlockStateList(event.getBlocks(), event);\r\n    }\r\n\r\n    private void onPiston(List<Block> blocks, BlockPistonEvent bukkitEvent) {\r\n        Map<Block, CustomBlockData> map = new LinkedHashMap<>();\r\n        BlockFace direction = bukkitEvent.getDirection();\r\n        blocks.stream().filter(customDataPredicate).forEach(block -> {\r\n            CustomBlockData cbd = new CustomBlockData(block, plugin);\r\n            if(cbd.isEmpty() || cbd.isProtected()) return;\r\n            Block destinationBlock = block.getRelative(direction);\r\n            CustomBlockDataMoveEvent moveEvent = new CustomBlockDataMoveEvent(plugin, block, destinationBlock, bukkitEvent);\r\n            Bukkit.getPluginManager().callEvent(moveEvent);\r\n            if (moveEvent.isCancelled()) return;\r\n            map.put(destinationBlock, cbd);\r\n        });\r\n        Utils.reverse(map).forEach((block, cbd) -> {\r\n            cbd.copyTo(block, plugin);\r\n            cbd.clear();\r\n        });\r\n    }\r\n\r\n    private static final class Utils {\r\n\r\n        private static <K, V> Map<K, V> reverse(Map<K, V> map) {\r\n            LinkedHashMap<K, V> reversed = new LinkedHashMap<>();\r\n            List<K> keys = new ArrayList<>(map.keySet());\r\n            Collections.reverse(keys);\r\n            keys.forEach((key) -> reversed.put(key, map.get(key)));\r\n            return reversed;\r\n        }\r\n\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jeff_media/customblockdata/BlockDataListener.java b/src/main/java/com/jeff_media/customblockdata/BlockDataListener.java
+--- a/src/main/java/com/jeff_media/customblockdata/BlockDataListener.java	(revision b5998089c81253b85635fb42af8d95449ef8879b)
++++ b/src/main/java/com/jeff_media/customblockdata/BlockDataListener.java	(date 1670753331015)
+@@ -113,7 +113,7 @@
+     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+     public void onPhysics(BlockPhysicsEvent event) {
+         // event.getBlock().getType() returns air when the block is broken
+-        if(event.getBlock().getType() == Material.AIR) {
++        if(event.getBlock().getType() == Material.AIR && CustomBlockData.hasCustomBlockData(event.getBlock(), plugin)) {
+             callAndRemove(event.getBlock(), event);
+         }
+     }
+Index: .idea/encodings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+new file mode 100644
+--- /dev/null	(date 1670753331014)
++++ b/.idea/encodings.xml	(date 1670753331014)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Encoding">
++    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
++  </component>
++</project>
+\ No newline at end of file
