@@ -22,6 +22,8 @@
 
 package com.jeff_media.customblockdata;
 
+import fr.euphyllia.energie.Energie;
+import fr.euphyllia.energie.model.SchedulerType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -149,6 +151,11 @@ public class CustomBlockData implements PersistentDataContainer {
     private final Plugin plugin;
 
     /**
+     * Energie Task
+     */
+    private static Energie energie;
+
+    /**
      * Gets the PersistentDataContainer associated with the given block and plugin
      *
      * @param block  Block
@@ -160,6 +167,7 @@ public class CustomBlockData implements PersistentDataContainer {
         this.pdc = getPersistentDataContainer();
         this.blockEntry = getBlockEntry(block);
         this.plugin = plugin;
+        energie = new Energie(this.plugin);
     }
 
     /**
@@ -176,6 +184,7 @@ public class CustomBlockData implements PersistentDataContainer {
         this.pdc = getPersistentDataContainer();
         this.plugin = JavaPlugin.getProvidingPlugin(CustomBlockData.class);
         this.blockEntry = getBlockEntry(block);
+        energie = new Energie(this.plugin);
     }
 
     /**
@@ -224,7 +233,9 @@ public class CustomBlockData implements PersistentDataContainer {
             return;
 
         DIRTY_BLOCKS.add(blockEntry);
-        Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+        energie.getScheduler(Energie.SchedulerSoft.MINECRAFT).runTask(SchedulerType.SYNC, schedulerTaskInter -> {
+            DIRTY_BLOCKS.remove(blockEntry);
+        });
     }
 
     /**
