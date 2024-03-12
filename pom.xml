@@ -237,7 +237,7 @@
         <dependency>
             <groupId>com.github.Euphillya</groupId>
             <artifactId>Energie</artifactId>
-            <version>9c34756230</version>
+            <version>1.1.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
