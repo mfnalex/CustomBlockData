@@ -226,7 +226,7 @@ public class CustomBlockData implements PersistentDataContainer {
             return;
 
         DIRTY_BLOCKS.add(blockEntry);
-        new Energie(plugin).getScheduler(Energie.SchedulerSoft.MINECRAFT).runTask(SchedulerType.SYNC, schedulerTaskInter -> {
+        new Energie(plugin).getMinecraftScheduler().runTask(SchedulerType.SYNC, schedulerTaskInter -> {
             DIRTY_BLOCKS.remove(blockEntry);
         });
     }
