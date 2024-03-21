@@ -172,7 +172,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.3.2</version>
+                                    <version>3.6.3</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <!-- For javadocs and MockBukkit-->
