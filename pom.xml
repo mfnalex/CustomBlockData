@@ -162,26 +162,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>enforce</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.6.3</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <!-- For javadocs and MockBukkit-->
-                                    <version>17.0.0</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
+                <version>3.4.1</version>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
