@@ -224,7 +224,11 @@ public class CustomBlockData implements PersistentDataContainer {
             return;
 
         DIRTY_BLOCKS.add(blockEntry);
-        Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+        try {
+            Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+        } catch (UnsupportedOperationException ignored) { // The exception is only thrown when it is Folia (or a fork)
+            plugin.getServer().getGlobalRegionScheduler().run(plugin, scheduledTask -> DIRTY_BLOCKS.remove(blockEntry));
+        }
     }
 
     /**
