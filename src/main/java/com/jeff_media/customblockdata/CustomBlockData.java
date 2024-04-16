@@ -111,7 +111,7 @@ public class CustomBlockData implements PersistentDataContainer {
     /**
      * True if server is folia
      */
-    private static final boolean IS_FOLIA;
+    private static boolean IS_FOLIA = false;
 
     static {
         checkRelocation();
