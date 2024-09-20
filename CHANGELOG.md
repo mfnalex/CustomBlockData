@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.3
+- Fixed blocks being broken by a piston getting their data moved instead of removed
+
 ## 2.2.2
 - [Merged #12](https://github.com/mfnalex/CustomBlockData/pull/12)
 

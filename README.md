@@ -45,7 +45,7 @@ The dependency is available on Maven Central:
 <dependency>
     <groupId>com.jeff-media</groupId>
     <artifactId>custom-block-data</artifactId>
-    <version>2.2.2</version>
+    <version>2.2.3</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -95,7 +95,7 @@ repositories {
 **Dependencies**
 ```groovy
 dependencies {
-    implementation 'com.jeff-media:custom-block-data:2.2.2'
+    implementation 'com.jeff-media:custom-block-data:2.2.3'
 }
 ```
 

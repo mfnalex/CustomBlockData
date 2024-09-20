@@ -29,6 +29,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -168,6 +169,11 @@ final class BlockDataListener implements Listener {
         blocks.stream().filter(customDataPredicate).forEach(block -> {
             CustomBlockData cbd = new CustomBlockData(block, plugin);
             if(cbd.isEmpty() || cbd.isProtected()) return;
+            PistonMoveReaction reaction = block.getPistonMoveReaction();
+            if(reaction == PistonMoveReaction.BREAK) {
+                callAndRemove(block, bukkitEvent);
+                return;
+            }
             Block destinationBlock = block.getRelative(direction);
             CustomBlockDataMoveEvent moveEvent = new CustomBlockDataMoveEvent(plugin, block, destinationBlock, bukkitEvent);
             Bukkit.getPluginManager().callEvent(moveEvent);
