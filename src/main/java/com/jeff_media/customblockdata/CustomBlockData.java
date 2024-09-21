@@ -108,6 +108,11 @@ public class CustomBlockData implements PersistentDataContainer {
      */
     private static final boolean HAS_MIN_HEIGHT_METHOD;
 
+    /**
+     * True if server is folia
+     */
+    private static boolean IS_FOLIA = false;
+
     static {
         checkRelocation();
     }
@@ -121,6 +126,15 @@ public class CustomBlockData implements PersistentDataContainer {
         } catch (final ReflectiveOperationException ignored) {
         }
         HAS_MIN_HEIGHT_METHOD = tmpHasMinHeightMethod;
+    }
+
+    static {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            IS_FOLIA = true;
+        } catch (ClassNotFoundException var2) {
+            IS_FOLIA = false;
+        }
     }
 
     /**
@@ -224,7 +238,11 @@ public class CustomBlockData implements PersistentDataContainer {
             return;
 
         DIRTY_BLOCKS.add(blockEntry);
-        Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+        if (IS_FOLIA) {
+            plugin.getServer().getGlobalRegionScheduler().run(plugin, scheduledTask -> DIRTY_BLOCKS.remove(blockEntry));
+        } else {
+            Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+        }
     }
 
     /**
