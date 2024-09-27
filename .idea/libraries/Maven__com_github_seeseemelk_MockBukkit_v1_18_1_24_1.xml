@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.seeseemelk:MockBukkit-v1.18:1.24.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/seeseemelk/MockBukkit-v1.18/1.24.1/MockBukkit-v1.18-1.24.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/seeseemelk/MockBukkit-v1.18/1.24.1/MockBukkit-v1.18-1.24.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/seeseemelk/MockBukkit-v1.18/1.24.1/MockBukkit-v1.18-1.24.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
