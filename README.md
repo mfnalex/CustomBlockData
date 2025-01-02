@@ -101,7 +101,7 @@ dependencies {
 
 **Shading & Relocating**
 
-You must shade (and you should relocate) the `customblockdata` package. You will need the Shadow plugin found [here](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow). Add the following to your shadowJar section!
+You must shade (and you should relocate) the `customblockdata` package. You will need the Shadow plugin found [here](https://plugins.gradle.org/plugin/com.gradleup.shadow). Add the following to your shadowJar section!
 
 ```groovy
 shadowJar {
