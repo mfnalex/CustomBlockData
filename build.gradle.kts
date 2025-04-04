@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.paper)
+    compileOnly(libs.folia)
     compileOnly(libs.jetbrains.annotations)
 
     testImplementation(libs.junit.junit)
@@ -26,9 +27,10 @@ dependencies {
 }
 
 group = "com.jeff-media"
-version = "2.2.4"
+version = "2.2.5"
 description = "CustomBlockData"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.disableAutoTargetJvm()
 
 java {
     withSourcesJar()
