@@ -108,8 +108,16 @@ public class CustomBlockData implements PersistentDataContainer {
      */
     private static final boolean HAS_MIN_HEIGHT_METHOD;
 
+    private static boolean onFolia;
+
     static {
         checkRelocation();
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            onFolia = true;
+        } catch (ClassNotFoundException e) {
+            onFolia = false;
+        }
     }
 
     static {
@@ -224,7 +232,13 @@ public class CustomBlockData implements PersistentDataContainer {
             return;
 
         DIRTY_BLOCKS.add(blockEntry);
-        Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+        if (onFolia) {
+            Bukkit.getServer().getGlobalRegionScheduler().runDelayed(plugin, task -> {
+                DIRTY_BLOCKS.remove(blockEntry);
+            }, 1L);
+        } else {
+            Bukkit.getScheduler().runTask(plugin, () -> DIRTY_BLOCKS.remove(blockEntry));
+        }
     }
 
     /**
