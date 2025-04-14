@@ -101,9 +101,22 @@ final class BlockDataListener implements Listener {
         }
     }
 
+    /**
+     * BlockPhysicsEvent is used for essentially the same thing but more precise
+     */
+    /*
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
         callAndRemove(event);
+    }
+     */
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPhysics(BlockPhysicsEvent event) {
+        // event.getBlock().getType() returns air when the block is broken
+        if(event.getBlock().getType() == Material.AIR && CustomBlockData.hasCustomBlockData(event.getBlock(), plugin)) {
+            callAndRemove(event.getBlock(), event);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -142,6 +155,16 @@ final class BlockDataListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPiston(BlockPistonRetractEvent event) {
+        Block pistonHead = event.getBlock().getRelative(event.getDirection().getOppositeFace());
+        Block destinationBlock = pistonHead.getRelative(event.getDirection());
+        if(CustomBlockData.hasCustomBlockData(pistonHead, plugin)) {
+            CustomBlockDataMoveEvent moveEvent = new CustomBlockDataMoveEvent(plugin, pistonHead, destinationBlock, event);
+            Bukkit.getPluginManager().callEvent(moveEvent);
+            if (moveEvent.isCancelled()) return;
+            CustomBlockData cbd = getCbd(pistonHead);
+            cbd.copyTo(pistonHead.getRelative(event.getDirection()), plugin);
+            cbd.clear();
+        }
         onPiston(event.getBlocks(), event);
     }
 
