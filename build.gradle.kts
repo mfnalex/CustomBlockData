@@ -10,15 +10,11 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url = uri("https://repo.jeff-media.com/public/")
-    }
-    maven {
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
 dependencies {
-    compileOnly(libs.paper)
     compileOnly(libs.folia)
     compileOnly(libs.jetbrains.annotations)
 
@@ -27,7 +23,7 @@ dependencies {
 }
 
 group = "com.jeff-media"
-version = "2.2.7"
+version = "2.2.8"
 description = "CustomBlockData"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.disableAutoTargetJvm()
@@ -37,7 +33,7 @@ java {
     withJavadocJar()
 
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 

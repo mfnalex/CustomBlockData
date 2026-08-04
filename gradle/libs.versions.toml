@@ -3,15 +3,14 @@
 
 [versions]
 mockbukkit = "3.1.0"
-paper = "1.20.1-R0.1-SNAPSHOT"
+folia = "26.1.2.build.8-stable"
 junit-junit = "4.13.2"
 org-jetbrains-annotations = "24.0.0"
 org-slf4j-slf4j-simple = "2.0.6"
 
 [libraries]
 mockbukkit = { module = "com.github.seeseemelk:MockBukkit-v1.19", version.ref = "mockbukkit" }
-paper = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
-folia = { module = "dev.folia:folia-api", version.ref = "paper" }
+folia = { module = "dev.folia:folia-api", version.ref = "folia" }
 junit-junit = { module = "junit:junit", version.ref = "junit-junit" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "org-jetbrains-annotations" }
 slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "org-slf4j-slf4j-simple" }
