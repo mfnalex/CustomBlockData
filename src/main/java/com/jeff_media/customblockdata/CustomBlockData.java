@@ -420,6 +420,23 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     /**
+     * Returns all blocks in the given chunk containing CustomBlockData from any plugin namespace.
+     * Blocks containing data from multiple plugin namespaces are only included once.
+     *
+     * @param chunk Chunk
+     * @return A set containing all blocks in the chunk that have CustomBlockData
+     */
+    @NotNull
+    public static Set<Block> getBlocksWithCustomData(final @NotNull Chunk chunk) {
+        final PersistentDataContainer chunkPDC = chunk.getPersistentDataContainer();
+        return chunkPDC.getKeys().stream()
+                .filter(key -> chunkPDC.has(key, PersistentDataType.TAG_CONTAINER))
+                .map(key -> getBlockFromKey(key, chunk))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    /**
      * Returns a Set of all blocks in this chunk containing Custom Block Data created by the given plugin
      *
      * @param plugin Plugin

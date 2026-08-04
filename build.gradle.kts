@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = "com.jeff-media"
-version = "2.2.6"
+version = "2.2.7"
 description = "CustomBlockData"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.disableAutoTargetJvm()
