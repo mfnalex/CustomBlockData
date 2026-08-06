@@ -153,3 +153,5 @@ If you are using this project in your paid plugins, or if you just want to buy m
 
 <a href="https://paypal.me/mfnalex"><img src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal" /></a>
 
+.
+
