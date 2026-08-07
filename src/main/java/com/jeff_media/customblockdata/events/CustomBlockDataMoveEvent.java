@@ -25,7 +25,6 @@ package com.jeff_media.customblockdata.events;
 import com.jeff_media.customblockdata.CustomBlockData;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 

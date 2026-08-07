@@ -22,7 +22,26 @@
 
 package com.jeff_media.customblockdata;
 
-import org.bukkit.*;
+import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataAdapterContext;
@@ -34,15 +53,7 @@ import org.bukkit.util.BlockVector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import com.jeff_media.customblockdata.events.CustomBlockDataSavedEvent;
 
 /**
  * Represents a {@link PersistentDataContainer} for a specific {@link Block}. Also provides some static utility methods
@@ -544,7 +555,8 @@ public class CustomBlockData implements PersistentDataContainer {
     }
 
     /**
-     * Saves the block's {@link PersistentDataContainer} inside the chunk's PersistentDataContainer
+     * Saves the block's {@link PersistentDataContainer} inside the chunk's PersistentDataContainer.
+     * Fires the {@link CustomBlockDataSavedEvent} event after saving.
      */
     private void save() {
         if (plugin != null) setDirty(plugin, blockEntry);
@@ -553,6 +565,9 @@ public class CustomBlockData implements PersistentDataContainer {
         } else {
             chunk.getPersistentDataContainer().set(key, PersistentDataType.TAG_CONTAINER, pdc);
         }
+
+        CustomBlockDataSavedEvent event = new CustomBlockDataSavedEvent(this);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     /**

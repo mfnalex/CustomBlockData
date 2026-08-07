@@ -92,8 +92,10 @@ signing {
 
 nmcp {
     publishAllProjectsProbablyBreakingProjectIsolation {
-        username.set(findProperty("mavenCentralUsername") as String)
-        password.set(findProperty("mavenCentralPassword") as String)
+        val mavenUsername = findProperty("mavenCentralUsername")
+        val mavenPassword = findProperty("mavenCentralPassword")
+        username.set(if (mavenUsername != null) mavenUsername as String else "")
+        password.set(if (mavenPassword != null) mavenPassword as String else "")
         publicationType = "AUTOMATIC"
     }
 }
