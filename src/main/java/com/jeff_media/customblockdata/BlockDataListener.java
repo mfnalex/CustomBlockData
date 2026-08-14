@@ -105,6 +105,14 @@ final class BlockDataListener implements Listener {
     public void onBreak(BlockBreakEvent event) {
         callAndRemove(event);
     }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPhysics(BlockPhysicsEvent event) {
+        // event.getBlock().getType() returns air when the block is broken
+        if(event.getBlock().getType() == Material.AIR) {
+            callAndRemove(event.getBlock(), event);
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
@@ -142,6 +150,10 @@ final class BlockDataListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPiston(BlockPistonRetractEvent event) {
+        Block pistonHead = event.getBlock().getRelative(event.getDirection().getOppositeFace());
+        if(CustomBlockData.hasCustomBlockData(pistonHead, plugin)) {
+            callAndRemove(pistonHead);
+        }
         onPiston(event.getBlocks(), event);
     }
 
